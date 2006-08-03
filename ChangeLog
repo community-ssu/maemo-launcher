@@ -1,3 +1,21 @@
+2006-08-03  Marius Vollmer  <marius.vollmer@nokia.com>
+
+	* configure.ac: Version 0.17.1.
+	
+	Make maemo-launcher upgradeable without causing an immediate
+	reboot.
+
+	* launcher/launcher.c (main): Call setpgid to put child process
+	into its own process group.  This way, the children continue to
+	live when the parent is killed.
+
+	* debian/init.d: Do not pass --exec option to start-stop-daemon
+	when stopping maemo-launcher.  Using --pidfile should be enough.
+	The --exec option doesn't work on Scratchbox since /proc/<pid>/exe
+	has filenames relative to the true root of the system, not
+	relative to the chroot of Scratchbox.
+
+
 2006-06-19  Guillem Jover  <guillem.jover@nokia.com>
 
 	* configure.ac: Version 0.17.

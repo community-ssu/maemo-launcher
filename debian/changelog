@@ -1,3 +1,10 @@
+maemo-launcher (0.17.1-1) unstable; urgency=low
+
+  * New upstream release.
+    - Make maemo-launcher upgradeable without causing an immediate reboot.
+
+ -- Marius Vollmer <marius.vollmer@nokia.com>  Thu,  3 Aug 2006 16:55:40 +0300
+
 maemo-launcher (0.17-1) unstable; urgency=low
 
   * New Upstream Release.

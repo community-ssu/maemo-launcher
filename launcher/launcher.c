@@ -809,6 +809,13 @@ main(int argc, char *argv[])
       close(fd);
       free(prog.name);
 
+      /* Put us in a new process group so that killing the
+	 maemo-launcher daemon does not kill us.  This is useful when
+	 upgrading the maemo-launcher while it is running, for
+	 example.
+      */
+      setpgid (0, 0);
+
       /* Invoke it. */
       if (prog.filename)
       {

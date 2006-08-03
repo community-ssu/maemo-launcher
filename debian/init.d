@@ -52,7 +52,7 @@ case "$1" in
     ;;
   stop)
     echo -n "Stopping $DESC: $NAME"
-    start-stop-daemon --stop --quiet --pidfile $PIDFILE --exec $DAEMON \
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE \
       || echo -n " not running"
     echo "."
     ;;
