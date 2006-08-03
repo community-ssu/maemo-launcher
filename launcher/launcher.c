@@ -814,7 +814,8 @@ main(int argc, char *argv[])
 	 upgrading the maemo-launcher while it is running, for
 	 example.
       */
-      setpgid (0, 0);
+      if (setpgid (0, 0) < 0)
+	perror ("setpgid");
 
       /* Invoke it. */
       if (prog.filename)
