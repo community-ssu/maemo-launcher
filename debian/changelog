@@ -2,6 +2,7 @@ maemo-launcher (0.21.1-1) UNRELEASED; urgency=low
 
   * New Upstream Release.
   * Remove build dependency on clinkc-av-dev.
+  * Do not pass '--send-app-died' in the init script.
 
  -- Guillem Jover <guillem.jover@nokia.com>  Wed, 29 Nov 2006 16:48:26 +0200
 
