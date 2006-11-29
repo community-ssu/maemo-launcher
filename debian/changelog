@@ -1,10 +1,12 @@
-maemo-launcher (0.21.1-1) UNRELEASED; urgency=low
+maemo-launcher (0.21.1-1) unstable; urgency=low
 
   * New Upstream Release.
+    - This version inherits the fixes for unprotecting non-essential user
+      processes from the OOM killer. (Fixes: NB#48073)
   * Remove build dependency on clinkc-av-dev.
   * Do not pass '--send-app-died' in the init script.
 
- -- Guillem Jover <guillem.jover@nokia.com>  Wed, 29 Nov 2006 16:48:26 +0200
+ -- Guillem Jover <guillem.jover@nokia.com>  Wed, 29 Nov 2006 16:55:20 +0200
 
 maemo-launcher (0.21-1) unstable; urgency=low
 

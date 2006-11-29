@@ -1,5 +1,9 @@
 2006-11-29  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.21.1.
+
+2006-11-29  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac (HILDON_DEPENDS): Remove clinkcav.
 
 2006-11-29  Guillem Jover  <guillem.jover@nokia.com>
