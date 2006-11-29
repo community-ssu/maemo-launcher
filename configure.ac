@@ -71,7 +71,6 @@ GTK_DEPENDS="
 HILDON_DEPENDS="$GTK_DEPENDS
 	gnome-vfs-2.0 >= 2.8.0
 	clinkc
-	clinkcav
 	libgtkhtml-3.8
 	libosso
 	libossohelp
