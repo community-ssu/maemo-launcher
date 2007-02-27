@@ -74,12 +74,11 @@ HILDON_DEPENDS="$GTK_DEPENDS
 	libgtkhtml-3.8
 	libosso
 	libossohelp
-	libossomime
+	libhildonmime
 	hildon-base-lib
-	hildon-fm
-	hildon-status-bar-lib
-	libhildonmenu
-	hildon-libs >= 0.7.5
+	hildon-fm-2
+	libhildondesktop
+	hildon-1
 "
 
 if test x$hildon_booster = xtrue

@@ -1,3 +1,10 @@
+maemo-launcher (0.21.1-1.2) experimental; urgency=low
+
+  * Replace debepdencies for new ones: hildon-libs-dev - libhildon1-dev , hildon-fm-dev - libhildonfm2-dev , libossomime-dev 
+    - libhildonmime-dev, libhildonmenu-dev - libhildondesktop-dev   
+
+ -- Natalia Dobrovolskaya <natalia.dobrovolskaya@nokia.com>  Wed,  21 Feb 2007 17:19:00 +0200
+
 maemo-launcher (0.21.1-1.1) experimental; urgency=low
 
   * Quick fix for experimental to not crash with gtk+ 2.10
