@@ -75,7 +75,6 @@ HILDON_DEPENDS="$GTK_DEPENDS
 	libosso
 	libossohelp
 	libhildonmime
-	hildon-base-lib
 	hildon-fm-2
 	libhildondesktop
 	hildon-1
