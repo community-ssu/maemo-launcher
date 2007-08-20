@@ -1,5 +1,10 @@
 2007-08-20  Guillem Jover  <guillem.jover@nokia.com>
 
+	* README: Refer to MAEMO_LAUNCHER_LIBS instead of
+	MAEMO_LAUNCHER_LDFLAGS.
+
+2007-08-20  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac: Bump version to 0.24~.
 
 2007-08-15  Guillem Jover  <guillem.jover@nokia.com>

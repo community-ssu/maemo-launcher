@@ -94,9 +94,9 @@ the application_CFLAGS variable:
 
 	$(MAEMO_LAUNCHER_CFLAGS)
 
-And to the the application_LDFLAGS variable:
+And to the the application_LIBS variable:
 
-	$(MAEMO_LAUNCHER_LDFLAGS)
+	$(MAEMO_LAUNCHER_LIBS)
 
 
 Debian Changes
