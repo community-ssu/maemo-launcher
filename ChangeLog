@@ -1,5 +1,11 @@
 2007-08-28  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_dbus.c (conn, comm_dbus_finish, comm_dbus_init): Merge
+	into ...
+	(comm_dbus_send_app_died): ... here.
+
+2007-08-28  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_dbus.c (comm_dbus_finish): Do not call dbus_shutdown,
 	as libdbus is too eager throwing abort(3) around.
 

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (C) 2006 Nokia Corporation
+ * Copyright (C) 2006, 2007 Nokia Corporation
  *
  * Author: Guillem Jover <guillem.jover@nokia.com>
  *
@@ -27,32 +27,15 @@
 #include "comm_dbus.h"
 #include "report.h"
 
-static DBusConnection *conn = NULL;
-
-static void
-comm_dbus_init(void)
-{
-  conn = dbus_bus_get(DBUS_BUS_SESSION, NULL);
-  if (conn == NULL)
-  {
-    die(1, "%s: getting dbus bus\n", __FUNCTION__);
-  }
-}
-
-static void
-comm_dbus_finish(void)
-{
-  dbus_connection_unref(conn);
-  conn = NULL;
-}
-
 static void
 comm_dbus_send_app_died(char *filename, int pid, int status)
 {
+  DBusConnection *conn;
   DBusMessage *msg;
 
-  if (!conn)
-    comm_dbus_init();
+  conn = dbus_bus_get(DBUS_BUS_SESSION, NULL);
+  if (conn == NULL)
+    die(1, "%s: getting dbus bus\n", __FUNCTION__);
 
   msg = dbus_message_new_signal(LAUNCHER_PATH,
 				LAUNCHER_IFACE,
@@ -72,7 +55,8 @@ comm_dbus_send_app_died(char *filename, int pid, int status)
   dbus_connection_flush(conn);
   dbus_message_unref(msg);
 
-  comm_dbus_finish();
+  dbus_connection_unref(conn);
+  conn = NULL;
 }
 
 void
