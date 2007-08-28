@@ -44,8 +44,6 @@ comm_dbus_finish(void)
 {
   dbus_connection_unref(conn);
   conn = NULL;
-
-  dbus_shutdown();
 }
 
 static void

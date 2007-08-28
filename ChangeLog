@@ -1,3 +1,8 @@
+2007-08-28  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/comm_dbus.c (comm_dbus_finish): Do not call dbus_shutdown,
+	as libdbus is too eager throwing abort(3) around.
+
 2007-08-20  Guillem Jover  <guillem.jover@nokia.com>
 
 	* README: Refer to MAEMO_LAUNCHER_LIBS instead of

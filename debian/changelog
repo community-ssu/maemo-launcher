@@ -1,6 +1,8 @@
 maemo-launcher (0.24-1) UNRELEASED; urgency=low
 
   * New Upstream Release.
+    - Do not call dbus_shutdown as libdbus is too eager to abort.
+      (Fixes: NB#65588)
 
  -- Guillem Jover <guillem.jover@nokia.com>  Mon, 20 Aug 2007 14:23:51 +0300
 
