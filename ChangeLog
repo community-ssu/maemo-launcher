@@ -1,5 +1,9 @@
 2007-08-30  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.24.
+
+2007-08-30  Guillem Jover  <guillem.jover@nokia.com>
+
 	* README: Cleanup.
 
 2007-08-28  Guillem Jover  <guillem.jover@nokia.com>
