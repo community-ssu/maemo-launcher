@@ -1,3 +1,7 @@
+2007-08-30  Guillem Jover  <guillem.jover@nokia.com>
+
+	* README: Cleanup.
+
 2007-08-28  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/comm_dbus.c (conn, comm_dbus_finish, comm_dbus_init): Merge
