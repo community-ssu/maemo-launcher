@@ -1,3 +1,13 @@
+2007-09-10  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/launcher.c (fs_init): New function.
+	(invoked_init): Move umask call to ...
+	(fs_init): ... here.
+	(daemonize): Move chdir call to ...
+	(fs_init): ... here.
+	(invoked_init): Move rise_oom_defense call to ...
+	(main): ... here. Call fs_init after env_init.
+
 2007-08-30  Guillem Jover  <guillem.jover@nokia.com>
 
 	* configure.ac: Version 0.24.

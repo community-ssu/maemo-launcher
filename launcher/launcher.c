@@ -164,7 +164,6 @@ invoked_init(void)
     die(1, "opening invoker socket\n");
 
   unlink(INVOKER_SOCK);
-  umask(022);
 
   sun.sun_family = AF_UNIX;
   strcpy(sun.sun_path, INVOKER_SOCK);
@@ -626,11 +625,13 @@ daemonize(void)
     die(1, "forking while daemonizing");
   else if (pid)
     _exit(0);
+}
 
+static void
+fs_init(void)
+{
+  umask(022);
   chdir("/");
-
-  /* Protect us from the oom monster. */
-  rise_oom_defense(getpid());
 }
 
 static void
@@ -730,6 +731,7 @@ main(int argc, char *argv[])
 
   sigs_init();
   env_init();
+  fs_init();
 
   /* Setup child tracking. */
   childs = alloc_childs(initial_child_slots);
@@ -739,6 +741,9 @@ main(int argc, char *argv[])
 
   if (daemon)
     daemonize();
+
+  /* Protect us from the oom monster. */
+  rise_oom_defense(getpid());
 
   if (quiet)
     console_quiet();
