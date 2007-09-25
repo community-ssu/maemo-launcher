@@ -1,6 +1,7 @@
 maemo-launcher (0.25-1) unstable; urgency=low
 
   * New Upstream Release.
+    - Do not link against libstdc++ anymore. (Fixes: NB#69684)
 
  -- Guillem Jover <guillem.jover@nokia.com>  Tue, 25 Sep 2007 19:58:46 +0300
 
