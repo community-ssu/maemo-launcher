@@ -1,5 +1,9 @@
 2007-09-25  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.25.
+
+2007-09-25  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac [hildon_booster] (BOOSTER_GTK_LIBS): Do not link
 	against libstdc++ anymore.
 
