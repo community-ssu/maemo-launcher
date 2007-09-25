@@ -1,3 +1,7 @@
+2007-09-25  Guillem Jover  <guillem.jover@nokia.com>
+
+	* configure.ac: Bump version to 0.25~.
+
 2007-09-10  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/launcher.c (fs_init): New function.
