@@ -1,5 +1,9 @@
 2007-10-03  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.26.
+
+2007-10-03  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/Makefile.am (dist_pkgconfig_DATA): Rename to ...
 	(pkgconfig_DATA): ... this.
 	(dist_man_MANS): Rename to ...
