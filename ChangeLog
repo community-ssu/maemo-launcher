@@ -1,5 +1,13 @@
 2007-10-03  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/Makefile.am (dist_pkgconfig_DATA): Rename to ...
+	(pkgconfig_DATA): ... this.
+	(dist_man_MANS): Rename to ...
+	(man_MANS): ... this.
+	(EXTRA_DIST): New variable.
+
+2007-10-03  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (alloc_childs): Free childs in case the malloc
 	for childs->list failed.
 

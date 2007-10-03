@@ -33,7 +33,7 @@ booster_gtk_so_LDADD = $(BOOSTER_GTK_LIBS)
 bin_PROGRAMS = maemo-launcher maemo-invoker maemo-summoner
 
 pkgconfigdir = $(libdir)/pkgconfig
-dist_pkgconfig_DATA = \
+pkgconfig_DATA = \
 	maemo-launcher-app.pc \
 	maemo-launcher-booster.pc
 
@@ -65,5 +65,15 @@ maemo_summoner_SOURCES = \
 maemo_summoner_CPPFLAGS = -DPROG_NAME="\"maemo-summoner\""
 maemo_summoner_LDADD = -ldl
 
-dist_man_MANS = maemo-launcher.1 maemo-invoker.1 maemo-summoner.1
+man_MANS = \
+	maemo-launcher.1 \
+	maemo-invoker.1 \
+	maemo-summoner.1
+
+EXTRA_DIST = \
+	booster.pc.in \
+	launcher.pc.in \
+	launcher.1.in \
+	invoker.1.in \
+	summoner.1.in
 
