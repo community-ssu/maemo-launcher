@@ -1,5 +1,10 @@
 2007-10-03  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (alloc_childs): Free childs in case the malloc
+	for childs->list failed.
+
+2007-10-03  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac: Bump version to 0.26~.
 
 2007-09-25  Guillem Jover  <guillem.jover@nokia.com>

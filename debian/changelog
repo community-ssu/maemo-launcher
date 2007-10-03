@@ -1,6 +1,7 @@
 maemo-launcher (0.26-1) UNRELEASED; urgency=low
 
   * New Upstream Release.
+    - Fix memory leak when failing to allocate the childs structure.
 
  -- Guillem Jover <guillem.jover@nokia.com>  Wed, 03 Oct 2007 14:57:15 +0300
 

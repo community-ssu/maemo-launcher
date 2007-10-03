@@ -375,6 +375,7 @@ alloc_childs(int n)
   if (!childs->list)
   {
     error("allocating a child list\n");
+    free(childs);
     return NULL;
   }
 
