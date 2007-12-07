@@ -1,5 +1,11 @@
 2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (child_destroy): New function.
+	(release_childs): Use child_destroy instead of inline destroy.
+	(release_child_slot): Likewise.
+
+2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
+
 	* client/Makefile.am (PIE): Remove variable.
 	(maemo_client_CPPFLAGS): Add $(PIC).
 	(maemo_client_LDFLAGS): Rename $(PIE) to $(PIC). Add '-shared'.

@@ -357,6 +357,16 @@ clean_daemon(int signal)
   exit(0);
 }
 
+static void
+child_destroy(child_t *child)
+{
+  close(child->sock);
+  child->sock = 0;
+  free(child->name);
+  child->name = NULL;
+  child->pid = 0;
+}
+
 static kindergarten_t *
 alloc_childs(int n)
 {
@@ -408,10 +418,7 @@ release_childs(kindergarten_t *childs)
   child_t *list = childs->list;
 
   for (i = 0; i < childs->used; i++)
-  {
-    close(list[i].sock);
-    free(list[i].name);
-  }
+    child_destroy(&list[i]);
 
   childs->used = 0;
   childs->n = 0;
@@ -499,13 +506,7 @@ release_child_slot(kindergarten_t *childs, pid_t pid, int status)
 
     invoked_send_exit(child->sock, status);
 
-    close(child->sock);
-    free(child->name);
-
-    child->name = NULL;
-    child->sock = 0;
-    child->pid = 0;
-
+    child_destroy(child);
     childs->used--;
   }
   else
