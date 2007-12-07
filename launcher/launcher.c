@@ -368,72 +368,72 @@ child_destroy(child_t *child)
 }
 
 static kindergarten_t *
-alloc_childs(int n)
+kindergarten_new(int n)
 {
-  kindergarten_t *childs;
+  kindergarten_t *kg;
 
-  childs = malloc(sizeof(kindergarten_t));
-  if (!childs)
+  kg = malloc(sizeof(kindergarten_t));
+  if (!kg)
   {
     error("allocating a kindergarten\n");
     return NULL;
   }
 
-  childs->used = 0;
-  childs->n = n;
-  childs->list = calloc(n, sizeof(child_t));
-  if (!childs->list)
+  kg->used = 0;
+  kg->n = n;
+  kg->list = calloc(n, sizeof(child_t));
+  if (!kg->list)
   {
     error("allocating a child list\n");
-    free(childs);
+    free(kg);
     return NULL;
   }
 
-  return childs;
+  return kg;
 }
 
 static bool
-grow_childs(kindergarten_t *childs)
+kindergarten_grow(kindergarten_t *kg)
 {
-  int halfsize = childs->n * sizeof(child_t);
+  int halfsize = kg->n * sizeof(child_t);
   int size = halfsize * 2;
   void *p;
 
-  p = realloc(childs->list, size);
+  p = realloc(kg->list, size);
   if (!p)
     return false;
 
-  childs->list = p;
-  memset(childs->list + childs->n, 0, halfsize);
+  kg->list = p;
+  memset(kg->list + kg->n, 0, halfsize);
 
-  childs->n *= 2;
+  kg->n *= 2;
 
   return true;
 }
 
 static bool
-release_childs(kindergarten_t *childs)
+kindergarten_destroy(kindergarten_t *kg)
 {
   int i;
-  child_t *list = childs->list;
+  child_t *list = kg->list;
 
-  for (i = 0; i < childs->used; i++)
+  for (i = 0; i < kg->used; i++)
     child_destroy(&list[i]);
 
-  childs->used = 0;
-  childs->n = 0;
-  free(childs->list);
+  kg->used = 0;
+  kg->n = 0;
+  free(kg->list);
 
   return true;
 }
 
 static int
-get_child_slot_by_pid(kindergarten_t *childs, pid_t pid)
+kindergarten_get_child_slot_by_pid(kindergarten_t *kg, pid_t pid)
 {
-  child_t *list = childs->list;
+  child_t *list = kg->list;
   int i;
 
-  for (i = 0; i < childs->n; i++)
+  for (i = 0; i < kg->n; i++)
     if (list[i].pid == pid)
       return i;
 
@@ -451,11 +451,11 @@ invoked_send_fake_exit(int sock)
 }
 
 static bool
-assign_child_slot(kindergarten_t *childs, child_t *child)
+kindergarten_insert_child(kindergarten_t *kg, child_t *child)
 {
   int id;
 
-  if (childs->used == childs->n && !grow_childs(childs))
+  if (kg->used == kg->n && !kindergarten_grow(kg))
   {
     error("cannot make a bigger kindergarten, not tracking child %d\n",
 	  child->pid);
@@ -463,7 +463,7 @@ assign_child_slot(kindergarten_t *childs, child_t *child)
     return false;
   }
 
-  id = get_child_slot_by_pid(childs, 0);
+  id = kindergarten_get_child_slot_by_pid(kg, 0);
   if (id < 0)
   {
     error("this cannot be happening! no free slots on the kindergarten,\n"
@@ -472,10 +472,10 @@ assign_child_slot(kindergarten_t *childs, child_t *child)
     return false;
   }
 
-  childs->list[id].name = child->name;
-  childs->list[id].sock = child->sock;
-  childs->list[id].pid = child->pid;
-  childs->used++;
+  kg->list[id].name = child->name;
+  kg->list[id].sock = child->sock;
+  kg->list[id].pid = child->pid;
+  kg->used++;
 
   return true;
 }
@@ -493,13 +493,13 @@ child_died_painfully(int status)
 }
 
 static bool
-release_child_slot(kindergarten_t *childs, pid_t pid, int status)
+kindergarten_release_child(kindergarten_t *kg, pid_t pid, int status)
 {
-  int id = get_child_slot_by_pid(childs, pid);
+  int id = kindergarten_get_child_slot_by_pid(kg, pid);
 
   if (id >= 0)
   {
-    child_t *child = &childs->list[id];
+    child_t *child = &kg->list[id];
 
     if (send_app_died && child_died_painfully(status))
       comm_send_app_died(child->name, pid, status);
@@ -507,7 +507,7 @@ release_child_slot(kindergarten_t *childs, pid_t pid, int status)
     invoked_send_exit(child->sock, status);
 
     child_destroy(child);
-    childs->used--;
+    kg->used--;
   }
   else
     info("no child %i found in the kindergarten.\n", pid);
@@ -516,14 +516,14 @@ release_child_slot(kindergarten_t *childs, pid_t pid, int status)
 }
 
 static void
-clean_childs(kindergarten_t *childs)
+kindergarten_reap_childs(kindergarten_t *kg)
 {
   int status;
   pid_t childpid;
 
   while ((childpid = waitpid(-1, &status, WNOHANG)) > 0)
   {
-    release_child_slot(childs, childpid, status);
+    kindergarten_release_child(kg, childpid, status);
 
     if (WIFEXITED(status))
       info("child (pid=%d) terminated due to exit()=%d\n", childpid,
@@ -687,7 +687,7 @@ int
 main(int argc, char *argv[])
 {
   booster_t *boosters = NULL;
-  kindergarten_t *childs;
+  kindergarten_t *kg;
   const int initial_child_slots = 64;
   int i;
   int fd;
@@ -736,7 +736,7 @@ main(int argc, char *argv[])
   fs_init();
 
   /* Setup child tracking. */
-  childs = alloc_childs(initial_child_slots);
+  kg = kindergarten_new(initial_child_slots);
 
   /* Setup the conversation channel with the invoker. */
   fd = invoked_init();
@@ -770,7 +770,7 @@ main(int argc, char *argv[])
     /* Handle signals received. */
     if (sigchild_catched)
     {
-      clean_childs(childs);
+      kindergarten_reap_childs(kg);
       sigchild_catched = false;
     }
 
@@ -821,7 +821,7 @@ main(int argc, char *argv[])
       close(fd);
       free(prog.name);
 
-      release_childs(childs);
+      kindergarten_destroy(kg);
 
       /* Invoke it. */
       if (prog.filename)
@@ -848,7 +848,7 @@ main(int argc, char *argv[])
 	child.sock = sd;
 	child.name = prog.name;
 
-	assign_child_slot(childs, &child);
+	kindergarten_insert_child(kg, &child);
       }
       else
 	close(sd);

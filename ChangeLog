@@ -1,5 +1,27 @@
 2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (alloc_childs): Rename to ...
+	(kindergarten_new): ... this. Rename childs to kg. Fix all callers.
+	(grow_childs): Rename to ...
+	(kindergarten_grow): ... this. Rename childs to kg. Fix all callers.
+	(release_childs): Rename to ...
+	(kindergarten_destroy): ... this. Rename childs to kg. Fix all callers.
+	(get_child_slot_by_pid): Rename to ...
+	(kindergarten_get_child_slot_by_pid): ... this. Rename childs to kg.
+	Fix all callers.
+	(assign_child_slot): Rename to ...
+	(kindergarten_insert_child): ... this. Rename childs to kg. Fix all
+	callers.
+	(release_child_slot): Rename to ...
+	(kindergarten_release_child): ... this. Rename childs to kg. Fix all
+	callers.
+	(clean_childs): Rename to ...
+	(kindergarten_reap_childs): ... this. Rename childs to kg. Fix all
+	callers.
+	(main): Rename childs to kg.
+
+2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (child_destroy): New function.
 	(release_childs): Use child_destroy instead of inline destroy.
 	(release_child_slot): Likewise.
