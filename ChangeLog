@@ -1,5 +1,10 @@
 2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (child_clone): New function.
+	(kindergarten_insert_child): Use child_clone instead of inline copy.
+
+2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (alloc_childs): Rename to ...
 	(kindergarten_new): ... this. Rename childs to kg. Fix all callers.
 	(grow_childs): Rename to ...

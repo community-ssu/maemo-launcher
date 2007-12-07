@@ -357,6 +357,12 @@ clean_daemon(int signal)
   exit(0);
 }
 
+static inline void
+child_clone(child_t *a, child_t *b)
+{
+  *a = *b;
+}
+
 static void
 child_destroy(child_t *child)
 {
@@ -472,9 +478,7 @@ kindergarten_insert_child(kindergarten_t *kg, child_t *child)
     return false;
   }
 
-  kg->list[id].name = child->name;
-  kg->list[id].sock = child->sock;
-  kg->list[id].pid = child->pid;
+  child_clone(&kg->list[id], child);
   kg->used++;
 
   return true;
