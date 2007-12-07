@@ -1,9 +1,9 @@
 /*
  * $Id$
  *
- * Copyright (C) 2005 Nokia Corporation
+ * Copyright (C) 2005, 2007 Nokia Corporation
  *
- * Author: Michael Natterer <mitch@imendio.com>
+ * Author: Guillem Jover <guillem.jover@nokia.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,26 +21,34 @@
  */
 
 #include <gtk/gtk.h>
-#include <hildon-widgets/hildon-app.h>
+#include <hildon/hildon-program.h>
+#include <hildon/hildon-window.h>
 
 int
 main(int argc, char *argv[])
 {
   GTimer *timer;
-  GtkWidget *view;
-  GtkWidget *app;
+  HildonProgram *program;
+  HildonWindow *window;
 
   timer = g_timer_new();
 
   gtk_init(&argc, &argv);
+
   g_print("gtk_init() took %f seconds\n", g_timer_elapsed(timer, NULL));
 
-  view = hildon_appview_new("maemo-client");
-  app = hildon_app_new_with_appview(HILDON_APPVIEW(view));
-  g_signal_connect(app, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  program = hildon_program_get_instance();
+  g_set_application_name("maemo-client");
+
+  window = HILDON_WINDOW(hildon_window_new());
+  hildon_program_add_window(program, window);
+
+  g_signal_connect(G_OBJECT(window), "destroy",
+                   G_CALLBACK(gtk_main_quit), NULL);
+
   g_print("creating widgets took %f seconds\n", g_timer_elapsed(timer, NULL));
 
-  gtk_widget_show_all(app);
+  gtk_widget_show_all(GTK_WIDGET(window));
   g_print("showing widgets took %f seconds\n", g_timer_elapsed(timer, NULL));
 
   g_timer_destroy(timer);

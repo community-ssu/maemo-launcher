@@ -1,3 +1,7 @@
+2007-12-07  Guillem Jover  <guillem.jover@nokia.com>
+
+	* client/client.c: Rewrite for Hildon 1.x.
+
 2007-12-04  Guillem Jover  <guillem.jover@nokia.com>
 
 	* configure.ac (DBUS_CFLAGS, DBUS_LIBS, CLIENT_CFLAGS, CLIENT_LIBS)

@@ -1,6 +1,7 @@
 maemo-launcher (0.27-1) UNRELEASED; urgency=low
 
   * New Upstream Release.
+    - Port client to Hildon 1.x.
 
  -- Guillem Jover <guillem.jover@nokia.com>  Tue, 04 Dec 2007 20:03:29 +0200
 
