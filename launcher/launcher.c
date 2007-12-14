@@ -240,6 +240,16 @@ invoked_get_exec(int fd, prog_t *prog)
 }
 
 static bool
+invoked_send_fake_exit(int sock)
+{
+  /* Send a fake exit code, so the invoker does not wait for us. */
+  invoked_send_exit(sock, 0);
+  close(sock);
+
+  return true;
+}
+
+static bool
 invoked_get_args(int fd, prog_t *prog)
 {
   int i;
@@ -444,16 +454,6 @@ kindergarten_get_child_slot_by_pid(kindergarten_t *kg, pid_t pid)
       return i;
 
   return -1;
-}
-
-static bool
-invoked_send_fake_exit(int sock)
-{
-  /* Send a fake exit code, so the invoker does not wait for us. */
-  invoked_send_exit(sock, 0);
-  close(sock);
-
-  return true;
 }
 
 static bool
