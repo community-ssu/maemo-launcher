@@ -240,16 +240,6 @@ invoked_get_exec(int fd, prog_t *prog)
 }
 
 static bool
-invoked_send_fake_exit(int sock)
-{
-  /* Send a fake exit code, so the invoker does not wait for us. */
-  invoked_send_exit(sock, 0);
-  close(sock);
-
-  return true;
-}
-
-static bool
 invoked_get_args(int fd, prog_t *prog)
 {
   int i;
@@ -350,6 +340,16 @@ invoked_send_exit(int fd, int status)
 {
   invoke_send_msg(fd, INVOKER_MSG_EXIT);
   invoke_send_msg(fd, status);
+
+  return true;
+}
+
+static bool
+invoked_send_fake_exit(int fd)
+{
+  /* Send a fake exit code, so the invoker does not wait for us. */
+  invoked_send_exit(fd, 0);
+  close(child.sock);
 
   return true;
 }
@@ -851,7 +851,7 @@ main(int argc, char *argv[])
 	child.name = prog.name;
 
 	if (!kindergarten_insert_child(kg, &child))
-	  invoked_send_fake_exit(child->sock);
+	  invoked_send_fake_exit(child.sock);
       }
       else
 	close(sd);
