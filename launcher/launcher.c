@@ -465,7 +465,6 @@ kindergarten_insert_child(kindergarten_t *kg, child_t *child)
   {
     error("cannot make a bigger kindergarten, not tracking child %d\n",
 	  child->pid);
-    invoked_send_fake_exit(child->sock);
     return false;
   }
 
@@ -474,7 +473,6 @@ kindergarten_insert_child(kindergarten_t *kg, child_t *child)
   {
     error("this cannot be happening! no free slots on the kindergarten,\n"
 	  "not tracking child %d\n", child->pid);
-    invoked_send_fake_exit(child->sock);
     return false;
   }
 
@@ -852,7 +850,8 @@ main(int argc, char *argv[])
 	child.sock = sd;
 	child.name = prog.name;
 
-	kindergarten_insert_child(kg, &child);
+	if (!kindergarten_insert_child(kg, &child))
+	  invoked_send_fake_exit(child->sock);
       }
       else
 	close(sd);
