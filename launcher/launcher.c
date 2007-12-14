@@ -349,7 +349,6 @@ invoked_send_fake_exit(int fd)
 {
   /* Send a fake exit code, so the invoker does not wait for us. */
   invoked_send_exit(fd, 0);
-  close(child.sock);
 
   return true;
 }
@@ -851,7 +850,10 @@ main(int argc, char *argv[])
 	child.name = prog.name;
 
 	if (!kindergarten_insert_child(kg, &child))
+	{
 	  invoked_send_fake_exit(child.sock);
+	  close(child.sock);
+	}
       }
       else
 	close(sd);
