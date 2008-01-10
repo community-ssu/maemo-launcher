@@ -1,3 +1,15 @@
+2008-01-10  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/comm_msg.h: New file.
+	* launcher/comm_msg.c: Likewise.
+	* launcher/test_lib.h: Likewise.
+	* launcher/test_lib.c: Likewise.
+	* launcher/test_msg.c: Likewise.
+	* launcher/Makefile.am (check_PROGRAMS): New variable.
+	(test_msg_SOURCES): Likewise.
+	(test_msg_CPPFLAGS): Likewise.
+	(TESTS): Likewise.
+
 2007-12-14  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/launcher.c (invoked_send_fake_exit): Move closing the file

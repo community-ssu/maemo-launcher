@@ -65,6 +65,13 @@ maemo_summoner_SOURCES = \
 maemo_summoner_CPPFLAGS = -DPROG_NAME="\"maemo-summoner\""
 maemo_summoner_LDADD = -ldl
 
+check_PROGRAMS = test-msg
+
+test_msg_SOURCES = test_lib.h test_lib.c test_msg.c comm_msg.c report.c
+test_msg_CPPFLAGS = -DPROG_NAME="\"test-msg\""
+
+TESTS = $(check_PROGRAMS)
+
 man_MANS = \
 	maemo-launcher.1 \
 	maemo-invoker.1 \
