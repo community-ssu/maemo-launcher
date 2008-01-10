@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (C) 2005, 2006, 2007 Nokia Corporation
+ * Copyright (C) 2005, 2006, 2007, 2008 Nokia Corporation
  *
  * Authors: Michael Natterer <mitch@imendio.com>
  *          Guillem Jover <guillem.jover@nokia.com>
@@ -43,12 +43,14 @@
 
 #include "report.h"
 #include "invokelib.h"
+#include "comm_msg.h"
 #include "comm_dbus.h"
 #include "booster.h"
 #include "prog.h"
 
 /* FIXME: Should go into '/var/run/'. */
 #define LAUNCHER_PIDFILE "/tmp/"PROG_NAME".pid"
+#define LAUNCHER_STATEFILE "/tmp/"PROG_NAME".state"
 
 typedef struct
 {
@@ -65,9 +67,11 @@ typedef struct
 } kindergarten_t;
 
 static char *pidfilename = LAUNCHER_PIDFILE;
+static char *statefilename = LAUNCHER_STATEFILE;
 static pid_t is_parent = 1;
 static volatile bool sigchild_catched = false;
 static volatile bool sighup_catched = false;
+static volatile bool sigreexec_catched = false;
 static bool send_app_died = false;
 
 #define OOM_ENABLE "0"
@@ -358,6 +362,7 @@ clean_daemon(int signal)
 {
   if (is_parent)
   {
+    unlink(statefilename);
     unlink(pidfilename);
     unlink(INVOKER_SOCK);
     killpg(0, signal);
@@ -537,6 +542,96 @@ kindergarten_reap_childs(kindergarten_t *kg)
   }
 }
 
+/* Persistence support */
+
+#define LAUNCHER_STATE_SIG "MLSF0.0"
+
+static bool
+store_state(kindergarten_t *childs, int invoker_fd)
+{
+  int i;
+  int fd;
+  child_t *list = childs->list;
+  comm_msg_t *msg;
+
+  unlink(statefilename);
+
+  fd = open(statefilename, O_WRONLY | O_CREAT, 0644);
+  if (fd < 0)
+  {
+    error("opening persistence file '%s'\n", statefilename);
+    return false;
+  }
+
+  msg = comm_msg_new(512);
+
+  comm_msg_pack_str(msg, LAUNCHER_STATE_SIG);
+  comm_msg_pack_int(msg, invoker_fd);
+  comm_msg_pack_int(msg, childs->used);
+
+  for (i = 0; i < childs->used; i++)
+  {
+    comm_msg_pack_int(msg, list[i].pid);
+    comm_msg_pack_int(msg, list[i].sock);
+    comm_msg_pack_str(msg, list[i].name);
+  }
+
+  comm_msg_send(fd, msg);
+
+  close(fd);
+
+  return true;
+}
+
+static kindergarten_t *
+load_state(int *invoker_fd)
+{
+  int i;
+  int fd;
+  uint32_t w;
+  const char *s;
+  kindergarten_t *childs;
+  child_t *list;
+  comm_msg_t *msg;
+
+  fd = open(statefilename, O_RDONLY);
+  if (fd < 0)
+  {
+    if (errno != ENOENT)
+      error("opening persistence file '%s'\n", statefilename);
+    return NULL;
+  }
+
+  msg = comm_msg_new(512);
+  comm_msg_recv(fd, msg);
+
+  close(fd);
+
+  comm_msg_unpack_str(msg, &s);
+  if (strcmp(LAUNCHER_STATE_SIG, s) != 0)
+  {
+    error("wrong signature on persistence file '%s'\n", statefilename);
+    return NULL;
+  }
+
+  comm_msg_unpack_int(msg, invoker_fd);
+
+  comm_msg_unpack_int(msg, &w);
+  childs = kindergarten_new(w);
+  childs->used = w;
+  list = childs->list;
+
+  for (i = 0; i < childs->used; i++)
+  {
+    comm_msg_unpack_int(msg, &list[i].pid);
+    comm_msg_unpack_int(msg, &list[i].sock);
+    comm_msg_unpack_str(msg, &s);
+    list[i].name = strdup(s);
+  }
+
+  return childs;
+}
+
 static void
 sigchild_handler(int sig)
 {
@@ -547,6 +642,12 @@ static void
 sighup_handler(int sig)
 {
   sighup_catched = true;
+}
+
+static void
+sigreexec_handler(int sig)
+{
+  sigreexec_catched = true;
 }
 
 static void
@@ -569,6 +670,9 @@ sigs_init(void)
 
   sig.sa_handler = sighup_handler;
   sigaction(SIGHUP, &sig, NULL);
+
+  sig.sa_handler = sigreexec_handler;
+  sigaction(SIGUSR1, &sig, NULL);
 }
 
 static void
@@ -585,12 +689,14 @@ sigs_restore(void)
   sigaction(SIGTERM, &sig, NULL);
   sigaction(SIGCHLD, &sig, NULL);
   sigaction(SIGHUP, &sig, NULL);
+  sigaction(SIGUSR1, &sig, NULL);
 }
 
 static void
 sigs_interrupt(int flag)
 {
   siginterrupt(SIGCHLD, flag);
+  siginterrupt(SIGUSR1, flag);
 }
 
 static void
@@ -694,6 +800,7 @@ main(int argc, char *argv[])
   int fd;
   bool daemon = false;
   bool quiet = false;
+  bool upgrading = false;
 
   /*
    * Parse arguments.
@@ -736,14 +843,21 @@ main(int argc, char *argv[])
   env_init();
   fs_init();
 
-  /* Setup child tracking. */
-  kg = kindergarten_new(initial_child_slots);
+  kg = load_state(&fd);
 
-  /* Setup the conversation channel with the invoker. */
-  fd = invoked_init();
+  if (kg)
+    upgrading = true;
+  else
+  {
+    /* Setup child tracking. */
+    kg = kindergarten_new(initial_child_slots);
 
-  if (daemon)
-    daemonize();
+    /* Setup the conversation channel with the invoker. */
+    fd = invoked_init();
+
+    if (daemon)
+      daemonize();
+  }
 
   /* Protect us from the oom monster. */
   rise_oom_defense(getpid());
@@ -751,7 +865,10 @@ main(int argc, char *argv[])
   if (quiet)
     console_quiet();
 
-  create_pidfile();
+  if (upgrading)
+    info("restored persitent state\n");
+  else
+    create_pidfile();
 
   /*
    * Application invokation loop.
@@ -779,6 +896,18 @@ main(int argc, char *argv[])
     {
       boosters_reload(boosters);
       sighup_catched = false;
+    }
+
+    if (sigreexec_catched)
+    {
+      info("storing kindergarten state\n");
+      store_state(kg, fd);
+
+      info("reexecuting self\n");
+      execv(argv[0], argv);
+
+      error("while trying to reexec self, trying to continue\n");
+      sigreexec_catched = false;
     }
 
     /* Minimal error handling. */

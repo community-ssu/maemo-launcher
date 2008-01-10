@@ -1,5 +1,26 @@
 2008-01-10  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/Makefile.am (maemo_launcher_SOURCES): Add 'comm_msg.c' and
+	'comm_msg.h'.
+	* launcher/launcher.c: Include "comm_msg.h".
+	(LAUNCHER_STATEFILE): New macro.
+	(statefilename): New variable.
+	(sigreexec_catched): Likewise.
+	(clean_daemon): Unlink statefilename.
+	(LAUNCHER_STATE_SIG): New macro.
+	(store_state): New function.
+	(load_state): Likewise.
+	(sigreexec_handler): Likewise.
+	(sigs_init): Initialize SIGUSR1 to sigreexec_handler.
+	(sigs_restore): Restore SIGUSR1.
+	(sigs_interrupt): Allow SIGUSR1 to interrupt syscalls.
+	(main): Try to load the state file, and fallback to normal
+	initialization if that fails. Only daemonize and create a pid file
+	if not loading the state file. Handle sigreexec_catched in the main
+	event loop to store the cache, and reexec self.
+
+2008-01-10  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_msg.h: New file.
 	* launcher/comm_msg.c: Likewise.
 	* launcher/test_lib.h: Likewise.

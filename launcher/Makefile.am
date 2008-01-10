@@ -41,7 +41,8 @@ maemo_launcherdir = $(pkgincludedir)
 maemo_launcher_HEADERS = booster_api.h
 maemo_launcher_SOURCES = \
 	launcher.c report.c report.h booster.c booster.h \
-	invokelib.c invokelib.h comm_dbus.c comm_dbus.h \
+	invokelib.c invokelib.h \
+	comm_msg.c comm_msg.h comm_dbus.c comm_dbus.h \
 	prog.c prog.h
 maemo_launcher_CPPFLAGS = \
 	$(DBUS_CFLAGS) \
