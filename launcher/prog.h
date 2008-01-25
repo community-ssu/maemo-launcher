@@ -30,7 +30,7 @@ typedef struct
   int options;
   int argc;
   char **argv;
-  char *filename;
+  const char *filename;
   char *name;
   int prio;
   entry_t entry;
@@ -39,7 +39,7 @@ typedef struct
 void load_main(prog_t *prog);
 void print_prog_env_argv(prog_t *prog);
 
-void set_progname(char *progname, int argc, char **argv, int copy_index);
+void set_progname(const char *progname, int argc, char **argv, int copy_index);
 
 #endif
 

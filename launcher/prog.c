@@ -85,7 +85,7 @@ set_process_name(const char *progname)
 #endif
 
 void
-set_progname(char *progname, int argc, char **argv, int copy_index)
+set_progname(const char *progname, int argc, char **argv, int copy_index)
 {
   int argvlen = 0;
   int proglen = strlen(progname) + 1;

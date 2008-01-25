@@ -1,3 +1,9 @@
+2008-01-25  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/prog.h (sprog_t): Make filename member const.
+	(set_progname): Make progname argument const.
+	* launcher/prog.c (set_progname): Likewise.
+
 2008-01-10  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/Makefile.am (maemo_launcher_SOURCES): Add 'comm_msg.c' and
