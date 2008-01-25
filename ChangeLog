@@ -1,5 +1,10 @@
 2008-01-25  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.h (comm_msg_reset): New function declaration.
+	* launcher/comm_msg.c (comm_msg_reset): New function.
+
+2008-01-25  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/prog.h (sprog_t): Make filename member const.
 	(set_progname): Make progname argument const.
 	* launcher/prog.c (set_progname): Likewise.

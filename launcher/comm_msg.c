@@ -96,6 +96,14 @@ comm_msg_grow(comm_msg_t *msg)
   return true;
 }
 
+bool
+comm_msg_reset(comm_msg_t *msg)
+{
+  msg->used = msg->read = 0;
+
+  return true;
+}
+
 static bool
 comm_msg_pack_mem(comm_msg_t *msg, const void *buf, uint32_t size)
 {

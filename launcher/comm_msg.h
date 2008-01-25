@@ -36,6 +36,7 @@ typedef struct comm_msg {
 comm_msg_t *comm_msg_new(uint32_t size);
 bool comm_msg_destroy(comm_msg_t *msg);
 bool comm_msg_grow(comm_msg_t *msg);
+bool comm_msg_reset(comm_msg_t *msg);
 
 bool comm_msg_send(int fd, comm_msg_t *msg);
 bool comm_msg_recv(int fd, comm_msg_t *msg);
