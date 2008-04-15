@@ -1,5 +1,10 @@
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.h (struct comm_msg): Move definition to ...
+	* launcher/comm_msg.c: ... here.
+
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_msg.h (struct comm_msg): Add a size_max member.
 	(comm_msg_new): Add a size_max argument.
 	* launcher/comm_msg.c: Include <assert.h>.

@@ -34,6 +34,14 @@
 #define WORD_MASK	(~(WORD_SIZE - 1))
 #define WORD_ALIGN(x)	(((x) + WORD_SIZE - 1) & WORD_MASK)
 
+struct comm_msg {
+  uint32_t size;
+  uint32_t size_max;
+  uint32_t used;
+  uint32_t read;
+  char *buf;
+};
+
 comm_msg_t *
 comm_msg_new(uint32_t size, size_t size_max)
 {

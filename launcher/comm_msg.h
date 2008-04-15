@@ -26,13 +26,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct comm_msg {
-  uint32_t size;
-  uint32_t size_max;
-  uint32_t used;
-  uint32_t read;
-  char *buf;
-} comm_msg_t;
+typedef struct comm_msg comm_msg_t;
 
 comm_msg_t *comm_msg_new(uint32_t size, uint32_t size_max);
 bool comm_msg_destroy(comm_msg_t *msg);
