@@ -35,6 +35,7 @@ int
 main()
 {
 	int fd;
+	uint32_t magic = 0xffff5555;
 	uint32_t w1 = 0xcafef00d, w2 = 0xdeadbeef, w3 = 0xd00d, w4 = 0xbabe;
 	const char *s1 = "0123456789abcdef, end here.";
 	const char *s2 = "some other more reasonable string";
@@ -45,6 +46,8 @@ main()
 	/* Serializing. */
 
 	msg = comm_msg_new(20, 0);
+
+	comm_msg_set_magic(msg, magic);
 
 	comm_msg_pack_int(msg, w1);
 	comm_msg_pack_int(msg, w2);
@@ -72,7 +75,10 @@ main()
 
 	comm_msg_recv(fd, msg);
 
-	tests_init(7);
+	tests_init(8);
+
+	if (comm_msg_get_magic(msg, &w))
+		test_cmp_int(magic, w);
 
 	if (comm_msg_unpack_int(msg, &w))
 		test_cmp_int(w1, w);

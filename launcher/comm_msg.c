@@ -167,6 +167,34 @@ comm_msg_unpack_mem(comm_msg_t *msg, uint32_t *size)
   return mem;
 }
 
+/*
+ * High level get/set functions.
+ */
+
+bool
+comm_msg_set_magic(comm_msg_t *msg, uint32_t magic)
+{
+  if (!comm_msg_grow(msg, sizeof(magic)))
+    return false;
+
+  memcpy(msg->buf + msg->used, &magic, sizeof(magic));
+  msg->used += sizeof(magic);
+
+  return true;
+}
+
+bool
+comm_msg_get_magic(comm_msg_t *msg, uint32_t *magic)
+{
+  if (msg->read + sizeof(*magic) > msg->used)
+    return false;
+
+  memcpy(magic, msg->buf + msg->read, sizeof(*magic));
+  msg->read += sizeof(*magic);
+
+  return true;
+}
+
 bool
 comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
 {

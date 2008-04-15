@@ -545,7 +545,7 @@ kindergarten_reap_childs(kindergarten_t *kg)
 
 /* Persistence support */
 
-#define LAUNCHER_STATE_SIG "MLSF0.0"
+#define LAUNCHER_STATE_SIG 0x30534c4d
 
 static bool
 store_state(kindergarten_t *childs, int invoker_fd)
@@ -566,7 +566,8 @@ store_state(kindergarten_t *childs, int invoker_fd)
 
   msg = comm_msg_new(512, 0);
 
-  comm_msg_pack_str(msg, LAUNCHER_STATE_SIG);
+  comm_msg_set_magic(msg, LAUNCHER_STATE_SIG);
+
   comm_msg_pack_int(msg, invoker_fd);
   comm_msg_pack_int(msg, childs->used);
 
@@ -589,7 +590,7 @@ load_state(int *invoker_fd)
 {
   int i;
   int fd;
-  uint32_t w;
+  uint32_t w, magic;
   const char *s;
   kindergarten_t *childs;
   child_t *list;
@@ -608,8 +609,8 @@ load_state(int *invoker_fd)
 
   close(fd);
 
-  comm_msg_unpack_str(msg, &s);
-  if (strcmp(LAUNCHER_STATE_SIG, s) != 0)
+  comm_msg_get_magic(msg, &magic);
+  if (LAUNCHER_STATE_SIG != magic)
   {
     error("wrong signature on persistence file '%s'\n", statefilename);
     return NULL;

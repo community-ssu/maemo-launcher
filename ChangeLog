@@ -1,3 +1,16 @@
+2008-03-20  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/comm_msg.h (comm_msg_set_magic): New prototype.
+	(comm_msg_get_magic): Likewise.
+	* launcher/comm_msg.c (comm_msg_set_magic): New function.
+	(comm_msg_get_magic): Likewise.
+	* launcher/test_msg.c (main): Set and get the magic and check the
+	value being the same.
+	* launcher/launcher.c (LAUNCHER_STATE_SIG): Change from "MLSF0.0"
+	to 0x30534c4d.
+	(store_state): Use comm_msg_set_magic instead of comm_msg_pack_str.
+	(load_state): Use comm_msg_get_magic instead of comm_msg_unpack_str.
+
 2008-03-18  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/comm_msg.h (comm_msg_print): New prototype.
