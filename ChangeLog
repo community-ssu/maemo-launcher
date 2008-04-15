@@ -1,5 +1,9 @@
 2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
 
+	* README: Add some documentation for make based build systems.
+
+2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_msg.h (comm_msg_set_magic): Rename to ...
 	(comm_msg_put_magic): ... this. Fix all users.
 	(comm_msg_pack_int): Rename to ...

@@ -62,12 +62,14 @@ Integrating the maemo-launcher painlessly
 These are the detailed changes needed to add support for the new
 maemo-launcher.
 
-The changes are meant for normal Maemo packages using automake. If yours
+The changes are meant for normal Maemo packages using automake (there's now
+some notes for make based build systems, but those might need more changes
+not documented here, as Makefiles can vary from writter to writter). If yours
 differ feel free to contact me (Guillem Jover <guillem.jover@nokia.com>)
 and I can help you on the process.
 
 
-Upstream Changes
+Upstream Changes (automake based build system)
 ----------------
 
 On configure.ac (or the deprecated configure.in) add something like:
@@ -100,6 +102,24 @@ And to the the application_LIBS variable:
 	$(MAEMO_LAUNCHER_LIBS)
 
 
+Upstream Changes (make based build system)
+----------------
+
+On the Makefile(s) responsible of compiling the object files and linking the
+application to be launcherized, the following can be used to obtain the
+proper flags:
+
+,----X<----
+|ifeq ($(USE_LAUNCHER),yes)
+|  application_CFLAGS := $(shell pkg-config --cflags maemo-launcher-app)
+|  application_LDFLAGS := $(shell pkg-config --libs maemo-launcher-app)
+|endif
+`----X<----
+
+Those new variables can then be added on the respective linking and compiling
+rules for the desired application in the Makefile.
+
+
 Debian Changes
 --------------
 
@@ -113,7 +133,7 @@ Debian Changes
 * debian/rules (debhelper):
 
   - At the top of the file around other code processing DEB_BUILD_OPTIONS,
-    add:
+    for automake base build systems add:
 
 ,----X<----
 |ifeq (,$(findstring nolauncher,$(DEB_BUILD_OPTIONS)))
@@ -121,11 +141,26 @@ Debian Changes
 |endif
 `----X<----
 
-  - On the configure call, add $(conf_opt), so that it becomes something
-    like:
+    For make based ones:
+
+,----X<----
+|ifeq (,$(findstring nolauncher,$(DEB_BUILD_OPTIONS)))
+|       USE_LAUNCHER := yes
+|endif
+`----X<----
+
+  - To notify the upstream build system that we might want to enable the
+    launcher support, for automake based build systems on the configure
+    call, add $(conf_opt), so that it becomes something like:
 
 ,----X<----
 |	./configure --enable-foo --enable-bar $(conf_opt)
+`----X<----
+
+    For make based ones:
+
+,----X<----
+|	$(MAKE) $(ARG_FOO) USE_LAUNCHER=$(USE_LAUNCHER)
 `----X<----
 
   - On the binary target producing the package with launcherized files,
