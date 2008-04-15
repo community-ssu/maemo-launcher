@@ -72,17 +72,18 @@ comm_msg_destroy(comm_msg_t *msg)
 }
 
 bool
-comm_msg_grow(comm_msg_t *msg)
+comm_msg_grow(comm_msg_t *msg, uint32_t need_size)
 {
   uint32_t end_size;
   void *p;
 
-  if (msg->used > msg->size)
-    /* Direct request for size growing. */
-    end_size = msg->used;
-  else
-    /* Automatic request for size growing. */
-    end_size = msg->size << 1;
+  if (msg->size - msg->used >= need_size)
+    return true;
+
+  end_size = msg->size + need_size;
+
+  /* Add some more space. */
+  end_size += msg->size;
 
   p = realloc(msg->buf, end_size);
   if (!p)
@@ -111,10 +112,10 @@ comm_msg_pack_mem(comm_msg_t *msg, const void *buf, uint32_t size)
   uint32_t aligned_size = WORD_ALIGN(size);
   uint32_t pad_size = aligned_size - size;
 
-  msg->used += aligned_size + sizeof(uint32_t);
+  if (!comm_msg_grow(msg, aligned_size + sizeof(uint32_t)))
+    return false;
 
-  if (msg->used > msg->size)
-    comm_msg_grow(msg);
+  msg->used += aligned_size + sizeof(uint32_t);
 
   /* Pack the size. */
   memcpy(cur, &aligned_size, sizeof(uint32_t));
@@ -225,12 +226,15 @@ comm_msg_send(int fd, comm_msg_t *msg)
 bool
 comm_msg_recv(int fd, comm_msg_t *msg)
 {
-  read(fd, &msg->used, sizeof(msg->used));
+  uint32_t size;
 
-  if (msg->used > msg->size)
-    comm_msg_grow(msg);
+  read(fd, &size, sizeof(size));
 
-  read(fd, msg->buf, msg->used);
+  if (!comm_msg_grow(msg, size))
+    return false;
+
+  read(fd, msg->buf, size);
+  msg->used = size;
 
   debug("%s: %08x\n", __FUNCTION__, *msg);
 

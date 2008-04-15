@@ -1,5 +1,14 @@
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.h (comm_msg_grow): Add a need_size argument.
+	(comm_msg_grow): Likewise. Remove implicit end_size calculations.
+	Fix all callers.
+	(comm_msg_pack_mem): Check comm_msg_grow return code and set
+	msg->used after calling it.
+	(comm_msg_recv): Likewise.
+
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/test_lib.h (test_success): New function declaration.
 	(test_failure): Likewise.
 	* launcher/test_lib.c (test_success): New function.
