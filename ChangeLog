@@ -1,5 +1,12 @@
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (invoked_send_action): New function.
+	(invoked_send_pid): Use invoked_send_action instead of single
+	invoke_send_msg calls.
+	(invoked_send_exit): Likewise.
+
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_msg.c (comm_msg_pack_mem): Get rid of cur variable,
 	and change msg->used after having copied the data.
 	(comm_msg_unpack_mem): Likewise. Add a check to make sure it does not

@@ -296,10 +296,18 @@ invoked_get_prio(int fd, prog_t *prog)
 }
 
 static bool
+invoked_send_action(int fd, int action, int value)
+{
+  invoke_send_msg(fd, action);
+  invoke_send_msg(fd, value);
+
+  return true;
+}
+
+static bool
 invoked_send_pid(int fd, pid_t pid)
 {
-  invoke_send_msg(fd, INVOKER_MSG_PID);
-  invoke_send_msg(fd, pid);
+  invoked_send_action(fd, INVOKER_MSG_PID, pid);
 
   return true;
 }
@@ -342,8 +350,7 @@ invoked_get_actions(int fd, prog_t *prog)
 static bool
 invoked_send_exit(int fd, int status)
 {
-  invoke_send_msg(fd, INVOKER_MSG_EXIT);
-  invoke_send_msg(fd, status);
+  invoked_send_action(fd, INVOKER_MSG_EXIT, status);
 
   return true;
 }
