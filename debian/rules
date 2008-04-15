@@ -88,7 +88,7 @@ binary-arch: build install
 	dh_installexamples -a
 	dh_install -a --sourcedir=$(CURDIR)/debian/tmp
 #	dh_installlogrotate
-	dh_installinit -a -- start 45 2 3 4 . stop 45 0 1 5 6 .
+	dh_installinit -a --no-start -- start 45 2 3 4 . stop 45 0 1 5 6 .
 	dh_installman -a
 	dh_link -a
 	dh_strip --dbg-package=maemo-launcher

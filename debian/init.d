@@ -53,10 +53,16 @@ case "$1" in
       || echo -n " not running"
     echo "."
     ;;
-  restart|force-reload)
+  restart)
     $0 stop
     sleep 1
     $0 start
+    ;;
+  reload|force-reload)
+    echo -n "Reloading $DESC: $NAME"
+    start-stop-daemon --stop --signal USR1 --quiet --pidfile $PIDFILE \
+      --exec $DAEMON || echo -n " not running"
+    echo "."
     ;;
   *)
     N=/etc/init.d/$NAME
