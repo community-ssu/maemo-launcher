@@ -44,7 +44,7 @@ main()
 
 	/* Serializing. */
 
-	msg = comm_msg_new(20);
+	msg = comm_msg_new(20, 0);
 
 	comm_msg_pack_int(msg, w1);
 	comm_msg_pack_int(msg, w2);
@@ -64,7 +64,7 @@ main()
 
 	/* Deserializing. */
 
-	msg = comm_msg_new(5);
+	msg = comm_msg_new(5, 0);
 
 	fd = open(test_file, O_RDONLY, 0644);
 	if (fd < 0)
@@ -72,7 +72,7 @@ main()
 
 	comm_msg_recv(fd, msg);
 
-	tests_init(6);
+	tests_init(7);
 
 	if (comm_msg_unpack_int(msg, &w))
 		test_cmp_int(w1, w);
@@ -92,6 +92,16 @@ main()
 	close(fd);
 
 	unlink(test_file);
+
+	/* Capped buffer. */
+
+	msg = comm_msg_new(4, 8);
+
+	comm_msg_pack_int(msg, w1);
+	comm_msg_pack_int(msg, w2);
+	test_failure(comm_msg_pack_int(msg, w3));
+
+	comm_msg_destroy(msg);
 
 	return tests_summary() ? 0 : 1;
 }

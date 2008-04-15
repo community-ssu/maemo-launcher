@@ -20,6 +20,7 @@
  *
  */
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -34,9 +35,12 @@
 #define WORD_ALIGN(x)	(((x) + WORD_SIZE - 1) & WORD_MASK)
 
 comm_msg_t *
-comm_msg_new(uint32_t size)
+comm_msg_new(uint32_t size, size_t size_max)
 {
   comm_msg_t *msg;
+
+  if (size_max)
+    assert(size <= size_max);
 
   msg = malloc(sizeof(*msg));
   if (!msg)
@@ -47,6 +51,7 @@ comm_msg_new(uint32_t size)
 
   msg->used = msg->read = 0;
   msg->size = WORD_ALIGN(size);
+  msg->size_max = WORD_ALIGN(size_max);
   msg->buf = malloc(msg->size);
   if (!msg->buf)
   {
@@ -63,7 +68,7 @@ comm_msg_destroy(comm_msg_t *msg)
 {
   if (msg->buf)
   {
-    msg->size = msg->used = msg->read = 0;
+    msg->size = msg->size_max = msg->used = msg->read = 0;
     free(msg->buf);
     msg->buf = NULL;
   }
@@ -82,8 +87,16 @@ comm_msg_grow(comm_msg_t *msg, uint32_t need_size)
 
   end_size = msg->size + need_size;
 
-  /* Add some more space. */
-  end_size += msg->size;
+  if (msg->size_max)
+  {
+    if (end_size > msg->size_max)
+      return false;
+
+    if (end_size + msg->size <= msg->size_max)
+      end_size += msg->size;
+  }
+  else
+    end_size += msg->size;
 
   p = realloc(msg->buf, end_size);
   if (!p)

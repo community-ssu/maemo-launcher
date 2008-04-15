@@ -1,5 +1,18 @@
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.h (struct comm_msg): Add a size_max member.
+	(comm_msg_new): Add a size_max argument.
+	* launcher/comm_msg.c: Include <assert.h>.
+	(comm_msg_new): Assert that size is <= size_max when size_max is
+	in use. Initialize size_max.
+	(comm_msg_destroy): Reset size_max.
+	(comm_msg_grow): Check for size_max cap.
+	* launcher/launcher.c (store_state): Initialize comm_msg cap to 0.
+	* launcher/test_msg.c (main): Likewise. Add a test for a capped
+	comm_msg.
+
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (invoked_send_pid): Return status value from
 	invoked_send_action.
 	(invoked_send_exit): Likewise.

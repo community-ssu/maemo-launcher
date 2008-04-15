@@ -564,7 +564,7 @@ store_state(kindergarten_t *childs, int invoker_fd)
     return false;
   }
 
-  msg = comm_msg_new(512);
+  msg = comm_msg_new(512, 0);
 
   comm_msg_pack_str(msg, LAUNCHER_STATE_SIG);
   comm_msg_pack_int(msg, invoker_fd);
@@ -603,7 +603,7 @@ load_state(int *invoker_fd)
     return NULL;
   }
 
-  msg = comm_msg_new(512);
+  msg = comm_msg_new(512, 0);
   comm_msg_recv(fd, msg);
 
   close(fd);
