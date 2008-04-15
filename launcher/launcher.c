@@ -307,9 +307,7 @@ invoked_send_action(int fd, int action, int value)
 static bool
 invoked_send_pid(int fd, pid_t pid)
 {
-  invoked_send_action(fd, INVOKER_MSG_PID, pid);
-
-  return true;
+  return invoked_send_action(fd, INVOKER_MSG_PID, pid);
 }
 
 static bool
@@ -350,18 +348,14 @@ invoked_get_actions(int fd, prog_t *prog)
 static bool
 invoked_send_exit(int fd, int status)
 {
-  invoked_send_action(fd, INVOKER_MSG_EXIT, status);
-
-  return true;
+  return invoked_send_action(fd, INVOKER_MSG_EXIT, status);
 }
 
 static bool
 invoked_send_fake_exit(int fd)
 {
   /* Send a fake exit code, so the invoker does not wait for us. */
-  invoked_send_exit(fd, 0);
-
-  return true;
+  return invoked_send_exit(fd, 0);
 }
 
 static void

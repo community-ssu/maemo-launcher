@@ -163,9 +163,7 @@ comm_msg_unpack_mem(comm_msg_t *msg, uint32_t *size)
 bool
 comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
 {
-  comm_msg_pack_mem(msg, &i, sizeof(i));
-
-  return true;
+  return comm_msg_pack_mem(msg, &i, sizeof(i));
 }
 
 bool
@@ -174,6 +172,10 @@ comm_msg_unpack_int(comm_msg_t *msg, uint32_t *i)
   uint32_t size, *p;
 
   p = (uint32_t *)comm_msg_unpack_mem(msg, &size);
+  if (!p) {
+    error("retrieving the integer\n");
+    return false;
+  }
 
   if (size != sizeof(*i))
     return false;
@@ -188,9 +190,7 @@ comm_msg_pack_str(comm_msg_t *msg, const char *str)
 {
   uint32_t size = strlen(str) + 1;
 
-  comm_msg_pack_mem(msg, str, size);
-
-  return true;
+  return comm_msg_pack_mem(msg, str, size);
 }
 
 bool

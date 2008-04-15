@@ -1,5 +1,16 @@
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (invoked_send_pid): Return status value from
+	invoked_send_action.
+	(invoked_send_exit): Likewise.
+	(invoked_send_fake_exit): Return status value from invoked_send_exit.
+	* launcher/comm_msg.c (comm_msg_pack_int): Return status value from
+	comm_msg_pack_mem.
+	(comm_msg_pack_str): Likewise.
+	(comm_msg_unpack_int): Check return value from comm_msg_unpack_mem.
+
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (invoked_send_action): New function.
 	(invoked_send_pid): Use invoked_send_action instead of single
 	invoke_send_msg calls.
