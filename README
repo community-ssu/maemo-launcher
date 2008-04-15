@@ -180,6 +180,14 @@ Debian Changes
 `----X<----
 
 
+Using a linker script
+=====================
+
+The amount of symbols exported can be reduced by means of a version script.
+Please check the ld info page («info ld Scripts VERSION») for its syntax.
+There's an example on the client/ directory in this source tree.
+
+
 Development and testing
 =======================
 
