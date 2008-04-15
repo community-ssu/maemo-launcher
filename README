@@ -52,7 +52,8 @@ to be safe against possible future changes in maemo-launcher.
 
 The children are dlopen()ed using RTLD_LAZY, so symbol relocation errors are
 not caught at the time we call dlopen(). Instead, the child will crash
-randomly at any later point if the libraries it depends on are somehow messed.
+randomly at any later point if the libraries it depends on are somehow messed
+up.
 
 
 Integrating the maemo-launcher painlessly
@@ -152,7 +153,7 @@ Testing w/o launcher support
 ----------------------------
 
 Sometimes during development, or in some cases when bugs appear, and one
-wants to discard the launcher from the diangosis, it's useful to be able
+wants to discard the launcher from the diagnosis, it's useful to be able
 to disable it. This can be done by building with the following command
 line:
 

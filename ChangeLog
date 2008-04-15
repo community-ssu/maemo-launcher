@@ -1,5 +1,9 @@
 2008-03-07  Guillem Jover  <guillem.jover@nokia.com>
 
+	* README: Fix a typo and add a missing word.
+
+2008-03-07  Guillem Jover  <guillem.jover@nokia.com>
+
 	* client/client.c (cleanup): New function.
 	(main): Install cleanup as an atexit function.
 	* launcher/launcher.c (launch_process): Call exit instead of _exit.
