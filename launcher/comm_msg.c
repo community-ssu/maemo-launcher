@@ -126,33 +126,6 @@ comm_msg_reset(comm_msg_t *msg)
   return true;
 }
 
-static bool
-comm_msg_pack_mem(comm_msg_t *msg, const void *buf, uint32_t size)
-{
-  uint32_t aligned_size = WORD_ALIGN(size);
-  uint32_t pad_size = aligned_size - size;
-
-  if (!comm_msg_grow(msg, aligned_size + sizeof(uint32_t)))
-    return false;
-
-  /* Pack the size. */
-  memcpy(msg->buf + msg->used, &aligned_size, sizeof(uint32_t));
-  msg->used += sizeof(uint32_t);
-
-  /* Pack the data. */
-  memcpy(msg->buf + msg->used, buf, size);
-  msg->used += size;
-
-  if (pad_size)
-  {
-    /* Add padding, if needed. */
-    memset(msg->buf + msg->used, 0, pad_size);
-    msg->used += pad_size;
-  }
-
-  return true;
-}
-
 static const void *
 comm_msg_unpack_mem(comm_msg_t *msg, uint32_t *size)
 {
@@ -184,7 +157,20 @@ comm_msg_unpack_mem(comm_msg_t *msg, uint32_t *size)
 bool
 comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
 {
-  return comm_msg_pack_mem(msg, &i, sizeof(i));
+  static const uint32_t size = sizeof(i);
+
+  if (!comm_msg_grow(msg, size + sizeof(size)))
+    return false;
+
+  /* Pack the size. */
+  memcpy(msg->buf + msg->used, &size, sizeof(size));
+  msg->used += sizeof(size);
+
+  /* Pack the data. */
+  memcpy(msg->buf + msg->used, &i, size);
+  msg->used += size;
+
+  return true;
 }
 
 bool
@@ -210,8 +196,28 @@ bool
 comm_msg_pack_str(comm_msg_t *msg, const char *str)
 {
   uint32_t size = strlen(str) + 1;
+  uint32_t aligned_size = WORD_ALIGN(size);
+  uint32_t pad_size = aligned_size - size;
 
-  return comm_msg_pack_mem(msg, str, size);
+  if (!comm_msg_grow(msg, aligned_size + sizeof(size)))
+    return false;
+
+  /* Pack the size. */
+  memcpy(msg->buf + msg->used, &aligned_size, sizeof(size));
+  msg->used += sizeof(size);
+
+  /* Pack the data. */
+  memcpy(msg->buf + msg->used, str, size);
+  msg->used += size;
+
+  if (pad_size)
+  {
+    /* Add padding, if needed. */
+    memset(msg->buf + msg->used, 0, pad_size);
+    msg->used += pad_size;
+  }
+
+  return true;
 }
 
 bool

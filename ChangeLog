@@ -1,5 +1,12 @@
 2008-02-22  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.c (comm_msg_pack_mem): Move code to ...
+	(comm_msg_pack_str): ... here.
+	(comm_msg_pack_int): Rewrite specialized version without taking into
+	account unaligned memory to improve performance.
+
+2008-02-22  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/Makefile.am (check_PROGRAMS): Add 'test-msg-perf'.
 	(test_msg_perf_SOURCES): New variable.
 	(test_msg_perf_CPPFLAGS): Likewise.
