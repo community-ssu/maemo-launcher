@@ -108,27 +108,25 @@ comm_msg_reset(comm_msg_t *msg)
 static bool
 comm_msg_pack_mem(comm_msg_t *msg, const void *buf, uint32_t size)
 {
-  void *cur = msg->buf + msg->used;
   uint32_t aligned_size = WORD_ALIGN(size);
   uint32_t pad_size = aligned_size - size;
 
   if (!comm_msg_grow(msg, aligned_size + sizeof(uint32_t)))
     return false;
 
-  msg->used += aligned_size + sizeof(uint32_t);
-
   /* Pack the size. */
-  memcpy(cur, &aligned_size, sizeof(uint32_t));
+  memcpy(msg->buf + msg->used, &aligned_size, sizeof(uint32_t));
+  msg->used += sizeof(uint32_t);
 
   /* Pack the data. */
-  cur += sizeof(uint32_t);
-  memcpy(cur, buf, size);
+  memcpy(msg->buf + msg->used, buf, size);
+  msg->used += size;
 
   if (pad_size)
   {
     /* Add padding, if needed. */
-    cur += size;
-    memset(cur, 0, pad_size);
+    memset(msg->buf + msg->used, 0, pad_size);
+    msg->used += pad_size;
   }
 
   return true;
@@ -137,25 +135,29 @@ comm_msg_pack_mem(comm_msg_t *msg, const void *buf, uint32_t size)
 static const void *
 comm_msg_unpack_mem(comm_msg_t *msg, uint32_t *size)
 {
-  void *cur = msg->buf + msg->read;
+  void *mem;
   int old_read = msg->read;
   uint32_t new_size;
 
-  /* Unpack the size. */
-  memcpy(&new_size, cur, sizeof(uint32_t));
+  if (msg->read + sizeof(uint32_t) > msg->used)
+    return NULL;
 
-  msg->read += new_size + sizeof(uint32_t);
+  /* Unpack the size. */
+  memcpy(&new_size, msg->buf + msg->read, sizeof(uint32_t));
+  msg->read += sizeof(uint32_t);
+
+  /* Keep a pointer to the data. */
+  mem = msg->buf + msg->read;
+  msg->read += new_size;
 
   if (msg->read > msg->used) {
-    error("trying to unpack more than available, unwinding action\n");
     msg->read = old_read;
     return NULL;
   }
 
   *size = new_size;
 
-  /* Return a pointer to the data. */
-  return cur + sizeof(uint32_t);
+  return mem;
 }
 
 bool

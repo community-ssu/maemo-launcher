@@ -1,5 +1,12 @@
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.c (comm_msg_pack_mem): Get rid of cur variable,
+	and change msg->used after having copied the data.
+	(comm_msg_unpack_mem): Likewise. Add a check to make sure it does not
+	read outside the buffer. Remove error message.
+
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_msg.h (comm_msg_grow): Add a need_size argument.
 	(comm_msg_grow): Likewise. Remove implicit end_size calculations.
 	Fix all callers.
