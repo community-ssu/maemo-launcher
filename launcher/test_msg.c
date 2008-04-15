@@ -47,14 +47,14 @@ main()
 
 	msg = comm_msg_new(20, 0);
 
-	comm_msg_set_magic(msg, magic);
+	comm_msg_put_magic(msg, magic);
 
-	comm_msg_pack_int(msg, w1);
-	comm_msg_pack_int(msg, w2);
-	comm_msg_pack_str(msg, s1);
-	comm_msg_pack_str(msg, s2);
-	comm_msg_pack_int(msg, w3);
-	comm_msg_pack_int(msg, w4);
+	comm_msg_put_int(msg, w1);
+	comm_msg_put_int(msg, w2);
+	comm_msg_put_str(msg, s1);
+	comm_msg_put_str(msg, s2);
+	comm_msg_put_int(msg, w3);
+	comm_msg_put_int(msg, w4);
 
 	fd = open(test_file, O_WRONLY | O_CREAT, 0644);
 	if (fd < 0)
@@ -80,17 +80,17 @@ main()
 	if (comm_msg_get_magic(msg, &w))
 		test_cmp_int(magic, w);
 
-	if (comm_msg_unpack_int(msg, &w))
+	if (comm_msg_get_int(msg, &w))
 		test_cmp_int(w1, w);
-	if (comm_msg_unpack_int(msg, &w))
+	if (comm_msg_get_int(msg, &w))
 		test_cmp_int(w2, w);
-	if (comm_msg_unpack_str(msg, &s))
+	if (comm_msg_get_str(msg, &s))
 		test_cmp_str(s1, s);
-	if (comm_msg_unpack_str(msg, &s))
+	if (comm_msg_get_str(msg, &s))
 		test_cmp_str(s2, s);
-	if (comm_msg_unpack_int(msg, &w))
+	if (comm_msg_get_int(msg, &w))
 		test_cmp_int(w3, w);
-	if (comm_msg_unpack_int(msg, &w))
+	if (comm_msg_get_int(msg, &w))
 		test_cmp_int(w4, w);
 
 	comm_msg_destroy(msg);
@@ -103,9 +103,9 @@ main()
 
 	msg = comm_msg_new(4, 8);
 
-	comm_msg_pack_int(msg, w1);
-	comm_msg_pack_int(msg, w2);
-	test_failure(comm_msg_pack_int(msg, w3));
+	comm_msg_put_int(msg, w1);
+	comm_msg_put_int(msg, w2);
+	test_failure(comm_msg_put_int(msg, w3));
 
 	comm_msg_destroy(msg);
 

@@ -158,11 +158,11 @@ comm_msg_get_u32(comm_msg_t *msg, uint32_t *i)
 }
 
 /*
- * High level get/set functions.
+ * High level put/get functions.
  */
 
 bool
-comm_msg_set_magic(comm_msg_t *msg, uint32_t magic)
+comm_msg_put_magic(comm_msg_t *msg, uint32_t magic)
 {
   if (!comm_msg_grow(msg, sizeof(magic)))
     return false;
@@ -184,7 +184,7 @@ comm_msg_get_magic(comm_msg_t *msg, uint32_t *magic)
 }
 
 bool
-comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
+comm_msg_put_int(comm_msg_t *msg, uint32_t i)
 {
   static const uint32_t size = sizeof(i);
 
@@ -201,7 +201,7 @@ comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
 }
 
 bool
-comm_msg_unpack_int(comm_msg_t *msg, uint32_t *i)
+comm_msg_get_int(comm_msg_t *msg, uint32_t *i)
 {
   uint32_t size;
 
@@ -219,7 +219,7 @@ comm_msg_unpack_int(comm_msg_t *msg, uint32_t *i)
 }
 
 bool
-comm_msg_pack_str(comm_msg_t *msg, const char *str)
+comm_msg_put_str(comm_msg_t *msg, const char *str)
 {
   uint32_t size = strlen(str) + 1;
   uint32_t aligned_size = WORD_ALIGN(size);
@@ -246,7 +246,7 @@ comm_msg_pack_str(comm_msg_t *msg, const char *str)
 }
 
 bool
-comm_msg_unpack_str(comm_msg_t *msg, const char **str_r)
+comm_msg_get_str(comm_msg_t *msg, const char **str_r)
 {
   uint32_t size;
   const char *str;

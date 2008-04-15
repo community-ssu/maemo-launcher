@@ -37,14 +37,14 @@ bool comm_msg_reset(comm_msg_t *msg);
 bool comm_msg_send(int fd, comm_msg_t *msg);
 bool comm_msg_recv(int fd, comm_msg_t *msg);
 
-bool comm_msg_set_magic(comm_msg_t *msg, uint32_t magic);
+bool comm_msg_put_magic(comm_msg_t *msg, uint32_t magic);
 bool comm_msg_get_magic(comm_msg_t *msg, uint32_t *magic);
 
-bool comm_msg_pack_int(comm_msg_t *msg, uint32_t i);
-bool comm_msg_unpack_int(comm_msg_t *msg, uint32_t *i);
+bool comm_msg_put_int(comm_msg_t *msg, uint32_t i);
+bool comm_msg_get_int(comm_msg_t *msg, uint32_t *i);
 
-bool comm_msg_pack_str(comm_msg_t *msg, const char *str);
-bool comm_msg_unpack_str(comm_msg_t *msg, const char **str);
+bool comm_msg_put_str(comm_msg_t *msg, const char *str);
+bool comm_msg_get_str(comm_msg_t *msg, const char **str);
 
 #endif
 

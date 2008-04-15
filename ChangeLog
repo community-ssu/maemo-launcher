@@ -1,5 +1,18 @@
 2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/comm_msg.h (comm_msg_set_magic): Rename to ...
+	(comm_msg_put_magic): ... this. Fix all users.
+	(comm_msg_pack_int): Rename to ...
+	(comm_msg_put_int): ... this. Fix all users.
+	(comm_msg_unpack_int): Rename to ...
+	(comm_msg_get_int): ... this. Fix all users.
+	(comm_msg_pack_str): Rename to ...
+	(comm_msg_put_str): ... this. Fix all users.
+	(comm_msg_unpack_str): Rename to ...
+	(comm_msg_get_str): ... this. Fix all users.
+
+2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/comm_msg.c (comm_msg_unpack_mem): Remove function.
 	(comm_msg_put_u32): New function.
 	(comm_msg_get_u32): Likewise.

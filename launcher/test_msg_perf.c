@@ -46,7 +46,7 @@ main()
 	for (i = 0; i < i_max; i++)
 	{
 		for (j = 0; j < j_max; j++)
-			comm_msg_pack_int(msg, w);
+			comm_msg_put_int(msg, w);
 
 		comm_msg_reset(msg);
 	}

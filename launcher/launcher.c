@@ -566,16 +566,16 @@ store_state(kindergarten_t *childs, int invoker_fd)
 
   msg = comm_msg_new(512, 0);
 
-  comm_msg_set_magic(msg, LAUNCHER_STATE_SIG);
+  comm_msg_put_magic(msg, LAUNCHER_STATE_SIG);
 
-  comm_msg_pack_int(msg, invoker_fd);
-  comm_msg_pack_int(msg, childs->used);
+  comm_msg_put_int(msg, invoker_fd);
+  comm_msg_put_int(msg, childs->used);
 
   for (i = 0; i < childs->used; i++)
   {
-    comm_msg_pack_int(msg, list[i].pid);
-    comm_msg_pack_int(msg, list[i].sock);
-    comm_msg_pack_str(msg, list[i].name);
+    comm_msg_put_int(msg, list[i].pid);
+    comm_msg_put_int(msg, list[i].sock);
+    comm_msg_put_str(msg, list[i].name);
   }
 
   comm_msg_send(fd, msg);
@@ -616,18 +616,18 @@ load_state(int *invoker_fd)
     return NULL;
   }
 
-  comm_msg_unpack_int(msg, invoker_fd);
+  comm_msg_get_int(msg, invoker_fd);
 
-  comm_msg_unpack_int(msg, &w);
+  comm_msg_get_int(msg, &w);
   childs = kindergarten_new(w);
   childs->used = w;
   list = childs->list;
 
   for (i = 0; i < childs->used; i++)
   {
-    comm_msg_unpack_int(msg, &list[i].pid);
-    comm_msg_unpack_int(msg, &list[i].sock);
-    comm_msg_unpack_str(msg, &s);
+    comm_msg_get_int(msg, &list[i].pid);
+    comm_msg_get_int(msg, &list[i].sock);
+    comm_msg_get_str(msg, &s);
     list[i].name = strdup(s);
   }
 
