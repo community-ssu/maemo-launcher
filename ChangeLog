@@ -1,3 +1,12 @@
+2008-03-18  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/comm_msg.h (comm_msg_print): New prototype.
+	* launcher/comm_msg.c (struct comm_msg): Change buf member from char *
+	to void *.
+	(comm_msg_print): New function.
+	(comm_msg_send): Use comm_msg_print to print msg instead of debug.
+	(comm_msg_recv): Likewise.
+
 2008-03-14  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/comm_msg.c (comm_msg_send): Use msg->used in sizeof instead

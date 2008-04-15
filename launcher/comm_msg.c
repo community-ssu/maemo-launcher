@@ -39,7 +39,7 @@ struct comm_msg {
   uint32_t size_max;
   uint32_t used;
   uint32_t read;
-  char *buf;
+  void *buf;
 };
 
 comm_msg_t *
@@ -80,6 +80,19 @@ comm_msg_destroy(comm_msg_t *msg)
     free(msg->buf);
     msg->buf = NULL;
   }
+
+  return true;
+}
+
+bool
+comm_msg_print(comm_msg_t *msg, char *func)
+{
+  uint32_t i, *p = msg->buf;
+
+  info("%s: size: %08x\n", func, msg->size);
+
+  for (i = 0; i < msg->used / sizeof(uint32_t); i++)
+    info("%s: data[%04x]: %08x\n", func, i, p[i]);
 
   return true;
 }
@@ -247,7 +260,9 @@ comm_msg_send(int fd, comm_msg_t *msg)
   write(fd, &msg->used, sizeof(msg->used));
   write(fd, msg->buf, msg->used);
 
-  debug("%s: %08x\n", __FUNCTION__, msg);
+#if DEBUG
+  comm_msg_print(msg, __FUNCTION__);
+#endif
 
   return true;
 }
@@ -265,7 +280,9 @@ comm_msg_recv(int fd, comm_msg_t *msg)
   read(fd, msg->buf, size);
   msg->used = size;
 
-  debug("%s: %08x\n", __FUNCTION__, *msg);
+#if DEBUG
+  comm_msg_print(msg, __FUNCTION__);
+#endif
 
   return true;
 }
