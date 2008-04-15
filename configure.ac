@@ -119,7 +119,8 @@ if test x$client = xtrue
 then
 
 PKG_CHECK_MODULES([CLIENT], [
-	$HILDON_DEPENDS
+	$GTK_DEPENDS
+	hildon-1
 ])
 
 fi
