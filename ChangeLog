@@ -1,5 +1,9 @@
 2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.27.
+
+2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
+
 	* README: Add some documentation about version scripts.
 
 2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
