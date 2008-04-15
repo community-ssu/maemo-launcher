@@ -1,5 +1,13 @@
 2008-02-22  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/invoker.c (invoker_init): Do not take a delay argument.
+	Fix all callers. Move magic sending logic to ...
+	(invoker_send_magic): ... here. New function.
+	(main): Initialize magic_options depending on the delay variable.
+	Call invoker_send_magic after invoker_init.
+
+2008-02-22  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/invoker.c (invoke_recv_ack): Use more descriptive names
 	for the msg variable.
 	(invoker_recv_pid): Likewise.

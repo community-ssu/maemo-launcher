@@ -101,10 +101,9 @@ invoke_recv_ack(int fd)
 }
 
 static int
-invoker_init(unsigned int delay)
+invoker_init(void)
 {
   int fd;
-  int options = 0;
   struct sockaddr_un sun;
 
   fd = socket(PF_UNIX, SOCK_STREAM, 0);
@@ -117,14 +116,18 @@ invoker_init(unsigned int delay)
   if (connect(fd, (struct sockaddr *)&sun, sizeof(sun)) < 0)
     die(1, "connecting to the launcher\n");
 
-  if (!delay)
-    options |= INVOKER_MSG_MAGIC_OPTION_WAIT;
+  return fd;
+}
 
+static bool
+invoker_send_magic(int fd, int options)
+{
   /* Send magic. */
   invoke_send_msg(fd, INVOKER_MSG_MAGIC | INVOKER_MSG_MAGIC_VERSION | options);
+
   invoke_recv_ack(fd);
 
-  return fd;
+  return true;
 }
 
 static bool
@@ -329,6 +332,7 @@ main(int argc, char *argv[])
   char *launch = NULL;
   char *delay_str = NULL;
   unsigned int delay;
+  int magic_options = 0;
 
   if (strstr(argv[0], PROG_NAME))
   {
@@ -388,7 +392,12 @@ main(int argc, char *argv[])
 
   delay = get_delay(delay_str);
 
-  fd = invoker_init(delay);
+  if (!delay)
+    magic_options |= INVOKER_MSG_MAGIC_OPTION_WAIT;
+
+  fd = invoker_init();
+
+  invoker_send_magic(fd, magic_options);
   invoker_send_name(fd, prog_argv[0]);
   invoker_send_exec(fd, prog_name);
   invoker_send_args(fd, prog_argc, prog_argv);
