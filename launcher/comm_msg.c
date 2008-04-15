@@ -139,32 +139,22 @@ comm_msg_reset(comm_msg_t *msg)
   return true;
 }
 
-static const void *
-comm_msg_unpack_mem(comm_msg_t *msg, uint32_t *size)
+/*
+ * Low level put/get functions.
+ */
+
+static void
+comm_msg_put_u32(comm_msg_t *msg, uint32_t i)
 {
-  void *mem;
-  int old_read = msg->read;
-  uint32_t new_size;
+  memcpy(msg->buf + msg->used, &i, sizeof(i));
+  msg->used += sizeof(i);
+}
 
-  if (msg->read + sizeof(uint32_t) > msg->used)
-    return NULL;
-
-  /* Unpack the size. */
-  memcpy(&new_size, msg->buf + msg->read, sizeof(uint32_t));
-  msg->read += sizeof(uint32_t);
-
-  /* Keep a pointer to the data. */
-  mem = msg->buf + msg->read;
-  msg->read += new_size;
-
-  if (msg->read > msg->used) {
-    msg->read = old_read;
-    return NULL;
-  }
-
-  *size = new_size;
-
-  return mem;
+static void
+comm_msg_get_u32(comm_msg_t *msg, uint32_t *i)
+{
+  memcpy(i, msg->buf + msg->read, sizeof(*i));
+  msg->read += sizeof(*i);
 }
 
 /*
@@ -177,8 +167,7 @@ comm_msg_set_magic(comm_msg_t *msg, uint32_t magic)
   if (!comm_msg_grow(msg, sizeof(magic)))
     return false;
 
-  memcpy(msg->buf + msg->used, &magic, sizeof(magic));
-  msg->used += sizeof(magic);
+  comm_msg_put_u32(msg, magic);
 
   return true;
 }
@@ -189,8 +178,7 @@ comm_msg_get_magic(comm_msg_t *msg, uint32_t *magic)
   if (msg->read + sizeof(*magic) > msg->used)
     return false;
 
-  memcpy(magic, msg->buf + msg->read, sizeof(*magic));
-  msg->read += sizeof(*magic);
+  comm_msg_get_u32(msg, magic);
 
   return true;
 }
@@ -204,12 +192,10 @@ comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
     return false;
 
   /* Pack the size. */
-  memcpy(msg->buf + msg->used, &size, sizeof(size));
-  msg->used += sizeof(size);
+  comm_msg_put_u32(msg, size);
 
   /* Pack the data. */
-  memcpy(msg->buf + msg->used, &i, size);
-  msg->used += size;
+  comm_msg_put_u32(msg, i);
 
   return true;
 }
@@ -217,18 +203,17 @@ comm_msg_pack_int(comm_msg_t *msg, uint32_t i)
 bool
 comm_msg_unpack_int(comm_msg_t *msg, uint32_t *i)
 {
-  uint32_t size, *p;
+  uint32_t size;
 
-  p = (uint32_t *)comm_msg_unpack_mem(msg, &size);
-  if (!p) {
-    error("retrieving the integer\n");
+  if (msg->read + sizeof(size) + sizeof(*i) > msg->used)
     return false;
-  }
+
+  comm_msg_get_u32(msg, &size);
 
   if (size != sizeof(*i))
     return false;
 
-  *i = *p;
+  comm_msg_get_u32(msg, i);
 
   return true;
 }
@@ -244,8 +229,7 @@ comm_msg_pack_str(comm_msg_t *msg, const char *str)
     return false;
 
   /* Pack the size. */
-  memcpy(msg->buf + msg->used, &aligned_size, sizeof(size));
-  msg->used += sizeof(size);
+  comm_msg_put_u32(msg, aligned_size);
 
   /* Pack the data. */
   memcpy(msg->buf + msg->used, str, size);
@@ -267,12 +251,17 @@ comm_msg_unpack_str(comm_msg_t *msg, const char **str_r)
   uint32_t size;
   const char *str;
 
-  str = comm_msg_unpack_mem(msg, &size);
-  if (!str)
-  {
-    error("retrieving the string\n");
+  if (msg->read + sizeof(uint32_t) > msg->used)
     return false;
-  }
+
+  comm_msg_get_u32(msg, &size);
+
+  /* Keep a pointer to the data. */
+  str = msg->buf + msg->read;
+  msg->read += size;
+
+  if (msg->read > msg->used)
+    return false;
 
   if ((size - strlen(str)) > WORD_SIZE)
     return false;

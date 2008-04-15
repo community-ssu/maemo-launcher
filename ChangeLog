@@ -1,3 +1,18 @@
+2008-04-15  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/comm_msg.c (comm_msg_unpack_mem): Remove function.
+	(comm_msg_put_u32): New function.
+	(comm_msg_get_u32): Likewise.
+	(comm_msg_set_magic): Use comm_msg_put_u32 instead of direct buffer
+	access.
+	(comm_msg_pack_int): Likewise.
+	(comm_msg_pack_str): Likewise.
+	(comm_msg_get_magic): Use comm_msg_get_u32 instead of direct buffer
+	access.
+	(comm_msg_unpack_int): Likewise. Perform boundary checks.
+	(comm_msg_unpack_str): Likewise. Get the string through the current
+	buffer read address.
+
 2008-03-20  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/comm_msg.h (comm_msg_set_magic): New prototype.
