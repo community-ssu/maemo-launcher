@@ -154,7 +154,7 @@ launch_process(prog_t *prog)
   report_set_output(report_none);
 #endif
 
-  _exit(prog->entry(prog->argc, prog->argv));
+  exit(prog->entry(prog->argc, prog->argv));
 }
 
 static int

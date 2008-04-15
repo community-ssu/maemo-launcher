@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (C) 2005, 2007 Nokia Corporation
+ * Copyright (C) 2005, 2007, 2008 Nokia Corporation
  *
  * Author: Guillem Jover <guillem.jover@nokia.com>
  *
@@ -24,12 +24,19 @@
 #include <hildon/hildon-program.h>
 #include <hildon/hildon-window.h>
 
+void
+cleanup(void)
+{
+  g_print("called at exit time...\n");
+}
+
 int
 main(int argc, char *argv[])
 {
   GTimer *timer;
   HildonProgram *program;
   HildonWindow *window;
+  int r;
 
   timer = g_timer_new();
 
@@ -52,6 +59,11 @@ main(int argc, char *argv[])
   g_print("showing widgets took %f seconds\n", g_timer_elapsed(timer, NULL));
 
   g_timer_destroy(timer);
+
+  g_print("installing exit function...\n");
+  r = atexit(cleanup);
+  if (r)
+    g_print("error while setting exit function (%d)\n", r);
 
   gtk_main();
 

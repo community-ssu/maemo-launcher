@@ -1,5 +1,13 @@
 2008-03-07  Guillem Jover  <guillem.jover@nokia.com>
 
+	* client/client.c (cleanup): New function.
+	(main): Install cleanup as an atexit function.
+	* launcher/launcher.c (launch_process): Call exit instead of _exit.
+	* launcher/summoner.c (summon_process): Likewise.
+	(main): Return 0 at the end of the function instead of _exit.
+
+2008-03-07  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac (CLIENT): Use only the minimum dependencies,
 	GTK_DEPENDS and hildon-1.
 

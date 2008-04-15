@@ -42,7 +42,7 @@ summon_process(prog_t *prog)
 
   debug("summoning process: '%s'\n", prog->filename);
 
-  _exit(prog->entry(prog->argc, prog->argv));
+  exit(prog->entry(prog->argc, prog->argv));
 }
 
 static void
@@ -132,6 +132,6 @@ main(int argc, char *argv[])
   else
     error("nothing to summon\n");
 
-  _exit (0);
+  return 0;
 }
 
