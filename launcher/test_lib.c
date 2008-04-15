@@ -47,6 +47,24 @@ tests_summary(void)
 }
 
 void
+test_success(bool r)
+{
+	if (r)
+		++tests_ok;
+	else
+		error("got %d expected %d\n", r, true);
+}
+
+void
+test_failure(bool r)
+{
+	if (!r)
+		++tests_ok;
+	else
+		error("got %d expected %d\n", r, false);
+}
+
+void
 test_cmp_int(uint32_t a, uint32_t b)
 {
 	if (a == b)

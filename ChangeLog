@@ -1,3 +1,10 @@
+2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/test_lib.h (test_success): New function declaration.
+	(test_failure): Likewise.
+	* launcher/test_lib.c (test_success): New function.
+	(test_failure): Likewise.
+
 2008-01-25  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/comm_msg.h (comm_msg_reset): New function declaration.
