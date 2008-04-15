@@ -244,7 +244,7 @@ comm_msg_unpack_str(comm_msg_t *msg, const char **str_r)
 bool
 comm_msg_send(int fd, comm_msg_t *msg)
 {
-  write(fd, &msg->used, sizeof(msg->size));
+  write(fd, &msg->used, sizeof(msg->used));
   write(fd, msg->buf, msg->used);
 
   debug("%s: %08x\n", __FUNCTION__, msg);

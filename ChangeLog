@@ -1,3 +1,8 @@
+2008-03-14  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/comm_msg.c (comm_msg_send): Use msg->used in sizeof instead
+	of msg->size.
+
 2008-03-07  Guillem Jover  <guillem.jover@nokia.com>
 
 	* README: Fix a typo and add a missing word.
