@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (C) 2005, 2006, 2007 Nokia Corporation
+ * Copyright (C) 2005, 2006, 2007, 2008 Nokia Corporation
  *
  * Author: Guillem Jover <guillem.jover@nokia.com>
  *
@@ -89,13 +89,13 @@ sigs_restore(void)
 static bool
 invoke_recv_ack(int fd)
 {
-  uint32_t msg;
+  uint32_t action;
 
   /* Revceive ACK. */
-  invoke_recv_msg(fd, &msg);
+  invoke_recv_msg(fd, &action);
 
-  if (msg != INVOKER_MSG_ACK)
-    die(1, "receiving wrong ack (%08x)\n", msg);
+  if (action != INVOKER_MSG_ACK)
+    die(1, "receiving wrong ack (%08x)\n", action);
   else
     return true;
 }
@@ -193,17 +193,17 @@ invoker_send_end(int fd)
 static bool
 invoker_recv_pid(int fd)
 {
-  uint32_t msg;
+  uint32_t action, pid;
 
   /* Receive action. */
-  invoke_recv_msg(fd, &msg);
+  invoke_recv_msg(fd, &action);
 
-  if (msg != INVOKER_MSG_PID)
-    die(1, "receiving bad pid (%08x)\n", msg);
+  if (action != INVOKER_MSG_PID)
+    die(1, "receiving bad pid (%08x)\n", action);
 
   /* Receive pid. */
-  invoke_recv_msg(fd, &msg);
-  invoked_pid = msg;
+  invoke_recv_msg(fd, &pid);
+  invoked_pid = pid;
 
   return true;
 }
@@ -211,18 +211,18 @@ invoker_recv_pid(int fd)
 static int
 invoker_recv_exit(int fd)
 {
-  uint32_t msg;
+  uint32_t action, status;
 
   /* Receive action. */
-  invoke_recv_msg(fd, &msg);
+  invoke_recv_msg(fd, &action);
 
-  if (msg != INVOKER_MSG_EXIT)
-    die(1, "receiving bad exit status (%08x)\n", msg);
+  if (action != INVOKER_MSG_EXIT)
+    die(1, "receiving bad exit status (%08x)\n", action);
 
   /* Receive status. */
-  invoke_recv_msg(fd, &msg);
+  invoke_recv_msg(fd, &status);
 
-  return msg;
+  return status;
 }
 
 static uint32_t

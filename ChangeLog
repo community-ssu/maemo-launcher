@@ -1,3 +1,14 @@
+2008-02-22  Guillem Jover  <guillem.jover@nokia.com>
+
+	* launcher/invoker.c (invoke_recv_ack): Use more descriptive names
+	for the msg variable.
+	(invoker_recv_pid): Likewise.
+	(invoker_recv_exit): Likewise.
+	* launcher/launcher.c (invoked_get_magic): Likewise.
+	(invoked_get_args): Likewise.
+	(invoked_get_prio): Likewise.
+	(invoked_get_actions): Likewise.
+
 2008-02-21  Guillem Jover  <guillem.jover@nokia.com>
 
 	* launcher/comm_msg.h (struct comm_msg): Move definition to ...

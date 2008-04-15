@@ -184,27 +184,27 @@ invoked_init(void)
 static bool
 invoked_get_magic(int fd, prog_t *prog)
 {
-  uint32_t msg;
+  uint32_t magic;
 
   /* Receive the magic. */
-  invoke_recv_msg(fd, &msg);
-  if ((msg & INVOKER_MSG_MASK) == INVOKER_MSG_MAGIC)
+  invoke_recv_msg(fd, &magic);
+  if ((magic & INVOKER_MSG_MASK) == INVOKER_MSG_MAGIC)
   {
-    if ((msg & INVOKER_MSG_MAGIC_VERSION_MASK) == INVOKER_MSG_MAGIC_VERSION)
+    if ((magic & INVOKER_MSG_MAGIC_VERSION_MASK) == INVOKER_MSG_MAGIC_VERSION)
       invoke_send_msg(fd, INVOKER_MSG_ACK);
     else
     {
-      error("receiving bad magic version (%08x)\n", msg);
+      error("receiving bad magic version (%08x)\n", magic);
       return false;
     }
   }
   else
   {
-    error("receiving bad magic (%08x)\n", msg);
+    error("receiving bad magic (%08x)\n", magic);
     return false;
   }
 
-  prog->options = msg & INVOKER_MSG_MAGIC_OPTION_MASK;
+  prog->options = magic & INVOKER_MSG_MAGIC_OPTION_MASK;
 
   return true;
 }
@@ -247,14 +247,14 @@ static bool
 invoked_get_args(int fd, prog_t *prog)
 {
   int i;
-  uint32_t msg;
+  uint32_t argc;
   size_t size;
 
   /* Get argc. */
-  invoke_recv_msg(fd, &msg);
-  prog->argc = msg;
-  size = msg * sizeof(char *);
-  if (size < msg)
+  invoke_recv_msg(fd, &argc);
+  prog->argc = argc;
+  size = argc * sizeof(char *);
+  if (size < argc)
   {
     error("on buggy or malicious invoker code, heap overflow avoided\n");
     return false;
@@ -285,10 +285,10 @@ invoked_get_args(int fd, prog_t *prog)
 static bool
 invoked_get_prio(int fd, prog_t *prog)
 {
-  uint32_t msg;
+  uint32_t prio;
 
-  invoke_recv_msg(fd, &msg);
-  prog->prio = msg;
+  invoke_recv_msg(fd, &prio);
+  prog->prio = prio;
 
   invoke_send_msg(fd, INVOKER_MSG_ACK);
 
@@ -315,12 +315,12 @@ invoked_get_actions(int fd, prog_t *prog)
 {
   while (1)
   {
-    uint32_t msg;
+    uint32_t action;
 
     /* Get the action. */
-    invoke_recv_msg(fd, &msg);
+    invoke_recv_msg(fd, &action);
 
-    switch (msg)
+    switch (action)
     {
     case INVOKER_MSG_EXEC:
       invoked_get_exec(fd, prog);
@@ -339,7 +339,7 @@ invoked_get_actions(int fd, prog_t *prog)
 
       return true;
     default:
-      error("receiving invalid action (%08x)\n", msg);
+      error("receiving invalid action (%08x)\n", action);
       return false;
     }
   }
