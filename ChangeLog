@@ -1,5 +1,10 @@
 2008-04-27  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (rise_oom_defense): Change error to warning
+	when the defender failed to execute.
+
+2008-04-27  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/report.h (enum report_type): Add report_warning.
 	(warning): New macro.
 	* launcher/report.c (vreport): Handle report_warning.

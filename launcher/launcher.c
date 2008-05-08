@@ -122,7 +122,7 @@ rise_oom_defense(pid_t pid)
     return true;
   else
   {
-    error("rising the oom shield for pid=%d status=%d\n", pid, status);
+    warning("rising the oom shield for pid=%d status=%d\n", pid, status);
     return false;
   }
 }
