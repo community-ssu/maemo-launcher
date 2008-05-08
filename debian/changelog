@@ -1,9 +1,9 @@
-maemo-launcher (0.29-1) UNRELEASED; urgency=low
+maemo-launcher (0.29-1) unstable; urgency=low
 
   * New Upstream Release.
     - Destroy and store state only for valid childs. (Fixes: NB#85166)
 
- -- Guillem Jover <guillem.jover@nokia.com>  Mon, 05 May 2008 16:37:08 +0300
+ -- Guillem Jover <guillem.jover@nokia.com>  Mon, 05 May 2008 16:56:36 +0300
 
 maemo-launcher (0.28-1) unstable; urgency=low
 
