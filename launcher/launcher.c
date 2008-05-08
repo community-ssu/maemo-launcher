@@ -580,6 +580,7 @@ store_state(kindergarten_t *childs, int invoker_fd)
 
   comm_msg_send(fd, msg);
 
+  comm_msg_destroy(msg);
   close(fd);
 
   return true;
@@ -613,6 +614,8 @@ load_state(int *invoker_fd)
   if (LAUNCHER_STATE_SIG != magic)
   {
     error("wrong signature on persistence file '%s'\n", statefilename);
+    comm_msg_destroy(msg);
+
     return NULL;
   }
 
@@ -630,6 +633,8 @@ load_state(int *invoker_fd)
     comm_msg_get_str(msg, &s);
     list[i].name = strdup(s);
   }
+
+  comm_msg_destroy(msg);
 
   return childs;
 }

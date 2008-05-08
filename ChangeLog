@@ -1,5 +1,10 @@
 2008-04-23  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (store_state): Call comm_msg_destroy.
+	(load_state): Likewise.
+
+2008-04-23  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac: Bump version to 0.28~.
 
 2008-04-15  Guillem Jover  <guillem.jover@nokia.com>

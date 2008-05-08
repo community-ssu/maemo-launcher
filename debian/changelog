@@ -1,6 +1,8 @@
 maemo-launcher (0.28-1) UNRELEASED; urgency=low
 
   * New Upstream Release.
+    - Fix memory leaks for comm_msg from the upgrade in-place support.
+      (Fixes: NB#84534)
 
  -- Guillem Jover <guillem.jover@nokia.com>  Wed, 23 Apr 2008 21:29:09 +0300
 
