@@ -1,5 +1,9 @@
 2008-04-27  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.28.
+
+2008-04-27  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (rise_oom_defense): Change error to warning
 	when the defender failed to execute.
 
