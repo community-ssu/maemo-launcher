@@ -60,6 +60,10 @@ vreport(enum report_type type, char *msg, va_list arg)
   case report_info:
     log_type = LOG_INFO;
     break;
+  case report_warning:
+    str_type = "warning ";
+    log_type = LOG_WARNING;
+    break;
   case report_error:
     str_type = "error ";
     log_type = LOG_ERR;

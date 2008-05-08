@@ -38,6 +38,7 @@ enum report_output {
 enum report_type {
   report_debug,
   report_info,
+  report_warning,
   report_error,
   report_fatal
 };
@@ -52,6 +53,7 @@ extern void report(enum report_type type, char *msg, ...);
 #endif
 
 #define info(msg, ...) report(report_info, msg, ##__VA_ARGS__)
+#define warning(msg, ...) report(report_warning, msg, ##__VA_ARGS__)
 #define error(msg, ...) report(report_error, msg, ##__VA_ARGS__)
 
 extern void ATTR_NORET die(int status, char *msg, ...);
