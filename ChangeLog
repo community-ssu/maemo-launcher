@@ -1,3 +1,7 @@
+2008-05-05  Guillem Jover  <guillem.jover@nokia.com>
+
+	* configure.ac: Bump version to 0.29~.
+
 2008-04-27  Guillem Jover  <guillem.jover@nokia.com>
 
 	* configure.ac: Version 0.28.
