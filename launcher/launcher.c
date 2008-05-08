@@ -381,11 +381,11 @@ child_clone(child_t *a, child_t *b)
 static void
 child_destroy(child_t *child)
 {
+  child->pid = 0;
   close(child->sock);
   child->sock = 0;
   free(child->name);
   child->name = NULL;
-  child->pid = 0;
 }
 
 static kindergarten_t *
