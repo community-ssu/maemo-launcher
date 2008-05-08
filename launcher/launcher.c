@@ -438,8 +438,9 @@ kindergarten_destroy(kindergarten_t *kg)
   int i;
   child_t *list = kg->list;
 
-  for (i = 0; i < kg->used; i++)
-    child_destroy(&list[i]);
+  for (i = 0; i < kg->n; i++)
+    if (list[i].pid)
+      child_destroy(&list[i]);
 
   kg->used = 0;
   kg->n = 0;
@@ -571,8 +572,11 @@ store_state(kindergarten_t *childs, int invoker_fd)
   comm_msg_put_int(msg, invoker_fd);
   comm_msg_put_int(msg, childs->used);
 
-  for (i = 0; i < childs->used; i++)
+  for (i = 0; i < childs->n; i++)
   {
+    if (!list[i].pid)
+      continue;
+
     comm_msg_put_int(msg, list[i].pid);
     comm_msg_put_int(msg, list[i].sock);
     comm_msg_put_str(msg, list[i].name);

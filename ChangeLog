@@ -1,5 +1,11 @@
 2008-05-05  Guillem Jover  <guillem.jover@nokia.com>
 
+	* launcher/launcher.c (kindergarten_destroy): Traverse the whole
+	child list and act on childs with a non-zero pid.
+	(store_state): Likewise.
+
+2008-05-05  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/launcher.c (child_destroy): Reset pid at the beginning.
 
 2008-05-05  Guillem Jover  <guillem.jover@nokia.com>
