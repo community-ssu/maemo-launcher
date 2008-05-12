@@ -1,3 +1,7 @@
+2008-05-12  Eero Tamminen  <eero.tamminen@nokia.com>
+
+	* README: Typo fix and additional information for symbol versioning.
+
 2008-05-12  Guillem Jover  <guillem.jover@nokia.com>
 
 	* configure.ac: Bump version to 0.30~.

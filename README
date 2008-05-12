@@ -64,7 +64,7 @@ maemo-launcher.
 
 The changes are meant for normal Maemo packages using automake (there's now
 some notes for make based build systems, but those might need more changes
-not documented here, as Makefiles can vary from writter to writter). If yours
+not documented here, as Makefiles can vary from writer to writer). If yours
 differ feel free to contact me (Guillem Jover <guillem.jover@nokia.com>)
 and I can help you on the process.
 
@@ -183,9 +183,13 @@ Debian Changes
 Using a linker script
 =====================
 
-The amount of symbols exported can be reduced by means of a version script.
-Please check the ld info page («info ld Scripts VERSION») for its syntax.
-There's an example on the client/ directory in this source tree.
+When an application is built as a library as required by maemo-launcher,
+symbols for all of its non-static functions will be exported, which can be
+a memory usage and startup performance issue if there are lots of them. In
+addition to marking functions static where possible the amount of symbols
+exported can be reduced by means of a version script. Please check the ld
+info page («info ld Scripts VERSION») for its syntax. There's an example
+on the client/ directory in this source tree.
 
 
 Development and testing
