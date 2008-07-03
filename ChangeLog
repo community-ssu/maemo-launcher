@@ -1,5 +1,9 @@
 2008-07-03  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Version 0.31.
+
+2008-07-03  Guillem Jover  <guillem.jover@nokia.com>
+
 	* launcher/invoker.c (disable_self_core_dump): New function.
 	(main): Call disable_self_core_dump before setting up the signal
 	forwarder.
