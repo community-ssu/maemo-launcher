@@ -6,7 +6,9 @@
 NAME=maemo-launcher
 DESC="Maemo Launcher"
 DAEMON=/usr/bin/$NAME
-DAEMON_BASE_OPTS="--daemon --send-app-died --booster gtk"
+# XXX: Because we take quality seriously let's disable the application crash
+# notification (you might want to add '--send-app-died' back...)
+DAEMON_BASE_OPTS="--daemon --booster gtk"
 PIDFILE=/tmp/$NAME.pid
 
 # When inside scratchbox we are not really root nor do we have 'user' user
