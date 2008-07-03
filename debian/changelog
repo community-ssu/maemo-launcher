@@ -1,4 +1,4 @@
-maemo-launcher (0.30-2) UNRELEASED; urgency=low
+maemo-launcher (0.31-1) UNRELEASED; urgency=low
 
   * Export USER, LOGNAME, SHELL and HOME to maemo-launcher. (Fixes: MM#1131)
   * Add comment in the init.d script about the wrongess of the current
