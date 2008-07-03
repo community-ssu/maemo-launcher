@@ -17,8 +17,11 @@ if [ -f /targets/links/scratchbox.config ]; then
   DAEMON_OPTS="$DAEMON_BASE_OPTS"
 else
   PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-  USER=user
-  HOME=/home/$USER
+  export USER=user
+  export LOGNAME=$USER
+  PWENTRY=`getent passwd $USER`
+  export HOME=`echo $PWENTRY | cut -d: -f6`
+  export SHELL=`echo $PWENTRY | cut -d: -f7`
   if [ `id -u` = 0 ]; then
     CHUID="--chuid $USER"
     # Make sure the launcher is not an OOM candidate
