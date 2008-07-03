@@ -30,6 +30,7 @@
 #include <signal.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/time.h>
 #include <sys/resource.h>
 #include <unistd.h>
 #include <errno.h>
@@ -84,6 +85,15 @@ sigs_restore(void)
   sig.sa_handler = SIG_DFL;
 
   sigs_set(&sig);
+}
+
+static void
+disable_self_core_dump(void)
+{
+  struct rlimit rlim = { 0, 0 };
+
+  if (setrlimit(RLIMIT_CORE, &rlim) != 0)
+    warning("could not disable self core dumping");
 }
 
 static bool
@@ -423,6 +433,11 @@ main(int argc, char *argv[])
     debug("waiting for invoked program to exit\n");
 
     invoker_recv_pid(fd);
+
+    /* We should disable self core dumps as late as possible, so that we have
+     * a chance to dump on our own bugs. */
+    disable_self_core_dump();
+
     sigs_init();
     status = invoker_recv_exit(fd);
     sigs_restore();
