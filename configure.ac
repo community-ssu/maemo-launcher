@@ -70,8 +70,8 @@ HILDON_DEPENDS="$GTK_DEPENDS
 	clinkc
 	libgtkhtml-3.8
 	libosso
-	libossohelp
 	libhildonmime
+	hildon-help
 	hildon-fm-2
 	libhildondesktop
 	hildon-1
