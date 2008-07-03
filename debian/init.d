@@ -9,13 +9,12 @@ DAEMON=/usr/bin/$NAME
 DAEMON_BASE_OPTS="--daemon --send-app-died --booster gtk"
 PIDFILE=/tmp/$NAME.pid
 
-# OSSO AF Init definitions
-DEFSDIR=/etc/osso-af-init/
-
 # When inside scratchbox we are not really root nor do we have 'user' user
 if [ -f /targets/links/scratchbox.config ]; then
   DAEMON_OPTS="$DAEMON_BASE_OPTS"
 else
+  # FIXME: this is wrong wrong wrong, and should not be hardcoded, this script
+  #        belongs in the session level instead.
   PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
   export USER=user
   export LOGNAME=$USER
@@ -35,6 +34,12 @@ test -x $DAEMON || exit 0
 set -e
 
 # Those files set needed environment variables for the Maemo applications
+# FIXME: but this should not be needed either, and should be inherited from
+#        the session instead.
+
+# OSSO AF Init definitions
+DEFSDIR=/etc/osso-af-init/
+
 if [ -e $DEFSDIR/af-defines.sh ]
 then
   . $DEFSDIR/af-defines.sh

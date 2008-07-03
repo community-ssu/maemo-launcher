@@ -1,6 +1,8 @@
 maemo-launcher (0.30-2) UNRELEASED; urgency=low
 
   * Export USER, LOGNAME, SHELL and HOME to maemo-launcher. (Fixes: MM#1131)
+  * Add comment in the init.d script about the wrongess of the current
+    approach.
 
  -- Guillem Jover <guillem.jover@nokia.com>  Fri, 06 Jun 2008 20:23:48 +0300
 
