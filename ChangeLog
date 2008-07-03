@@ -1,3 +1,7 @@
+2008-05-29  Guillem Jover  <guillem.jover@nokia.com>
+
+	* configure.ac: Version 0.30.
+
 2008-05-28  Guillem Jover  <guillem.jover@nokia.com>
 
 	* configure.ac (HILDON_DEPENDS): Replace libossohelp with hildon-help.
