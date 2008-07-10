@@ -11,6 +11,21 @@ DAEMON=/usr/bin/$NAME
 DAEMON_BASE_OPTS="--daemon --booster gtk"
 PIDFILE=/tmp/$NAME.pid
 
+# Those files set needed environment variables for the Maemo applications
+# FIXME: but this should not be needed either, and should be inherited from
+#        the session instead.
+
+# OSSO AF Init definitions
+DEFSDIR=/etc/osso-af-init/
+
+if [ -e $DEFSDIR/af-defines.sh ]
+then
+  . $DEFSDIR/af-defines.sh
+else
+  echo "$DEFSDIR/af-defines.sh not found!"
+  exit 1
+fi
+
 # When inside scratchbox we are not really root nor do we have 'user' user
 if [ -f /targets/links/scratchbox.config ]; then
   DAEMON_OPTS="$DAEMON_BASE_OPTS"
@@ -34,21 +49,6 @@ fi
 test -x $DAEMON || exit 0
 
 set -e
-
-# Those files set needed environment variables for the Maemo applications
-# FIXME: but this should not be needed either, and should be inherited from
-#        the session instead.
-
-# OSSO AF Init definitions
-DEFSDIR=/etc/osso-af-init/
-
-if [ -e $DEFSDIR/af-defines.sh ]
-then
-  . $DEFSDIR/af-defines.sh
-else
-  echo "$DEFSDIR/af-defines.sh not found!"
-  exit 1
-fi
 
 case "$1" in
   start)
