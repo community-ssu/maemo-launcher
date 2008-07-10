@@ -3,6 +3,8 @@
 # $Id$
 #
 
+set -e
+
 NAME=maemo-launcher
 DESC="Maemo Launcher"
 DAEMON=/usr/bin/$NAME
@@ -10,6 +12,8 @@ DAEMON=/usr/bin/$NAME
 # notification (you might want to add '--send-app-died' back...)
 DAEMON_BASE_OPTS="--daemon --booster gtk"
 PIDFILE=/tmp/$NAME.pid
+
+test -x $DAEMON || exit 0
 
 # Those files set needed environment variables for the Maemo applications
 # FIXME: but this should not be needed either, and should be inherited from
@@ -45,10 +49,6 @@ else
   fi
   DAEMON_OPTS="$DAEMON_BASE_OPTS --quiet"
 fi
-
-test -x $DAEMON || exit 0
-
-set -e
 
 case "$1" in
   start)
