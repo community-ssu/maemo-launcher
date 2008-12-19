@@ -3,6 +3,8 @@
 # $Id$
 #
 
+set -e
+
 NAME=maemo-launcher
 DESC="Maemo Launcher"
 DAEMON=/usr/bin/$NAME
@@ -11,33 +13,34 @@ DAEMON=/usr/bin/$NAME
 DAEMON_BASE_OPTS="--daemon --booster gtk"
 PIDFILE=/tmp/$NAME.pid
 
-# When inside scratchbox we are not really root nor do we have 'user' user
-if [ -f /targets/links/scratchbox.config ]; then
-  DAEMON_OPTS="$DAEMON_BASE_OPTS"
-else
-  # FIXME: this is wrong wrong wrong, and should not be hardcoded, this script
-  #        belongs in the session level instead.
-  PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-  USER=user
-  HOME=/home/$USER
-  if [ `id -u` = 0 ]; then
-    CHUID="--chuid $USER"
-    # Make sure the launcher is not an OOM candidate
-    NICE="--nicelevel -1"
-  fi
-  DAEMON_OPTS="$DAEMON_BASE_OPTS --quiet"
-fi
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 test -x $DAEMON || exit 0
-
-set -e
 
 # Those files set needed environment variables for the Maemo applications
 # FIXME: but this should not be needed either, and should be inherited from
 #        the session instead.
 
+set_login_vars()
+{
+  export USER=$1
+  export LOGNAME=$USER
+  PWENTRY=`getent passwd $USER`
+  export HOME=`echo $PWENTRY | cut -d: -f6`
+  export SHELL=`echo $PWENTRY | cut -d: -f7`
+}
+
 # OSSO AF Init definitions
 DEFSDIR=/etc/osso-af-init/
+
+# When inside scratchbox we are not really root nor do we have 'user' user
+if [ -f /targets/links/scratchbox.config ]; then
+  set_login_vars `id -u -n`
+else
+  # FIXME: this is wrong wrong wrong, and should not be hardcoded, this script
+  #        belongs in the session level instead.
+  set_login_vars user
+fi
 
 if [ -e $DEFSDIR/af-defines.sh ]
 then
@@ -45,6 +48,21 @@ then
 else
   echo "$DEFSDIR/af-defines.sh not found!"
   exit 1
+fi
+
+# XXX: Reset the login variables, as af-defines.sh makes a mess and stomps
+#      on some of the variables we have already initialized!
+if [ -f /targets/links/scratchbox.config ]; then
+  set_login_vars `id -u -n`
+  DAEMON_OPTS="$DAEMON_BASE_OPTS"
+else
+  set_login_vars user
+  if [ `id -u` = 0 ]; then
+    CHUID="--chuid user"
+    # Make sure the launcher is not an OOM candidate
+    NICE="--nicelevel -1"
+  fi
+  DAEMON_OPTS="$DAEMON_BASE_OPTS --quiet"
 fi
 
 case "$1" in
