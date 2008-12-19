@@ -1,3 +1,9 @@
+maemo-launcher (0.31-3) unstable; urgency=low
+
+  * Revert "Export USER, LOGNAME, SHELL and HOME to maemo-launcher".
+
+ -- Guillem Jover <guillem.jover@nokia.com>  Thu, 10 Jul 2008 19:29:18 +0300
+
 maemo-launcher (0.31-2) unstable; urgency=low
 
   * Sources af-defines.sh at the beginning to avoid it unconditionally
