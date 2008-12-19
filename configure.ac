@@ -73,7 +73,7 @@ HILDON_DEPENDS="$GTK_DEPENDS
 	libhildonmime
 	hildon-help
 	hildon-fm-2
-	libhildondesktop
+	libhildondesktop-1
 	hildon-1
 "
 
