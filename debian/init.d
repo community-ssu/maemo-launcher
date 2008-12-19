@@ -6,8 +6,8 @@
 NAME=maemo-launcher
 DESC="Maemo Launcher"
 DAEMON=/usr/bin/$NAME
-# XXX: Because we take quality seriously let's disable the application crash
-# notification (you might want to add '--send-app-died' back...)
+# XXX: Disable the application crash notification (you might want to
+#      add '--send-app-died' back...)
 DAEMON_BASE_OPTS="--daemon --booster gtk"
 PIDFILE=/tmp/$NAME.pid
 

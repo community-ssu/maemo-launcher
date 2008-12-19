@@ -16,8 +16,7 @@ maemo-launcher (0.31-1) unstable; urgency=low
   * Export USER, LOGNAME, SHELL and HOME to maemo-launcher. (Fixes: MM#1131)
   * Add comment in the init.d script about the wrongess of the current
     approach.
-  * Let's take quality seriously by disabling the application crash
-    notifications. (Fixes: NB#86711)
+  * Disable the application crash notifications. (Fixes: NB#86711)
   * Disable self core dumping on maemo-invoker just before enabling signal
     forwarding. (Fixes: NB#86713)
 
