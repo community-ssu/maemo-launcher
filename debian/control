@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 4.0.0), libgtk2.0-dev (>= 2.6.4-1),
  gtkhtml-dev, clinkc-dev, libosso-dev, libosso-gnomevfs2-dev (>= 2.8.0-1),
  libhildonmime-dev, libhildonhelp-dev, libhildonfm2-dev, libhildondesktop-dev,
  libhildon1-dev
+# To build the QT Booster we need libqt4-dev
 Standards-Version: 3.7.2
 
 Package: maemo-launcher

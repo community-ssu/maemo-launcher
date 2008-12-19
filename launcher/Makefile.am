@@ -30,6 +30,16 @@ booster_gtk_so_LDFLAGS = -shared -fPIC
 booster_gtk_so_CPPFLAGS = $(BOOSTER_GTK_CFLAGS)
 booster_gtk_so_LDADD = $(BOOSTER_GTK_LIBS)
 
+if USE_QT_BOOSTER
+booster_PROGRAMS += booster-qt.so
+endif
+
+booster_qt_so_SOURCES = booster_qt.c
+booster_qt_so_CFLAGS = -fPIC
+booster_qt_so_LDFLAGS = -shared -fPIC
+booster_qt_so_CPPFLAGS = $(BOOSTER_QT_CFLAGS)
+booster_qt_so_LDADD = $(BOOSTER_QT_LIBS)
+
 bin_PROGRAMS = maemo-launcher maemo-invoker maemo-summoner
 
 pkgconfigdir = $(libdir)/pkgconfig

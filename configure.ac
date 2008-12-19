@@ -88,6 +88,30 @@ PKG_CHECK_MODULES([BOOSTER_GTK], [
 	$BOOSTER_GTK_DEPENDS
 ])
 
+AC_ARG_ENABLE([qt-booster],
+	[AS_HELP_STRING([--enable-qt-booster],
+			[link with QT libs to reduce runtime linker time])],
+	[case "${enableval}" in
+	  (yes) qt_booster=true ;;
+	  (no)  qt_booster=false ;;
+	  (*) AC_MSG_ERROR([bad value ${enableval} for --enable-qt-booster]) ;;
+	esac], [qt_booster=false])
+AM_CONDITIONAL([USE_QT_BOOSTER], [test x$qt_booster = xtrue])
+
+BOOSTER_QT_DEPENDS="
+	QtCore
+	QtDBus
+	QtGui
+"
+if test x$qt_booster = xtrue
+then
+
+PKG_CHECK_MODULES([BOOSTER_QT], [
+	$BOOSTER_QT_DEPENDS
+])
+
+fi
+
 #
 # Test client program
 #

@@ -1,6 +1,7 @@
 maemo-launcher (0.32-1) UNRELEASED; urgency=low
 
   * New Upstream Release.
+    - Add support for a Qt booster (not built by default).
 
  -- Guillem Jover <guillem.jover@nokia.com>  Fri, 19 Dec 2008 14:53:59 +0200
 

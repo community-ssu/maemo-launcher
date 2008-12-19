@@ -1,5 +1,16 @@
 2008-12-19  Guillem Jover  <guillem.jover@nokia.com>
 
+	* configure.ac: Add --enable-qt-booster.
+	* launcher/Makefile.am (booster_qt_so_SOURCES): New variable.
+	(booster_qt_so_CFLAGS): Likewise.
+	(booster_qt_so_LDFLAGS): Likewise.
+	(booster_qt_so_CPPFLAGS): Likewise.
+	(booster_qt_so_LDADD): Likewise.
+	[USE_QT_BOOSTER] (booster_PROGRAMS): Likewise.
+	* launcher/booster_qt.c: New file.
+
+2008-12-19  Guillem Jover  <guillem.jover@nokia.com>
+
 	* configure.ac: Bump version to 0.32~.
 
 2008-07-03  Guillem Jover  <guillem.jover@nokia.com>
