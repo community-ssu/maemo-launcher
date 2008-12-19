@@ -1,10 +1,10 @@
-maemo-launcher (0.31-4) UNRELEASED; urgency=low
+maemo-launcher (0.31-4) unstable; urgency=low
 
   * Export USER, LOGNAME, SHELL and HOME to maemo-launcher again,
     but this time do it before and after sourcing af-defines.sh as it
     likes to make a mess and stomp on our variables. (Fixes: MM#1131)
 
- -- Guillem Jover <guillem.jover@nokia.com>  Thu, 09 Oct 2008 22:00:26 +0300
+ -- Guillem Jover <guillem.jover@nokia.com>  Thu, 09 Oct 2008 22:46:32 +0300
 
 maemo-launcher (0.31-3) unstable; urgency=low
 
