@@ -45,7 +45,7 @@ booster_cpp_reload(booster_state_t state)
   debug("booster CPP module reload\n");
 }
 
-booster_api_t booster_qt_api = {
+booster_api_t booster_cpp_api = {
   .booster_version = BOOSTER_API_VERSION,
   .booster_preinit = booster_cpp_preinit,
   .booster_init = booster_cpp_init,
