@@ -1,3 +1,9 @@
+maemo-launcher (0.32-2) unstable; urgency=low
+
+  * Adds cpp booster (Fixes: #108695)
+
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Tue, 07 Apr 2009 13:36:27 +0300
+
 maemo-launcher (0.32-1) unstable; urgency=low
 
   * New Upstream Release.
