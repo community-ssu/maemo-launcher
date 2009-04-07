@@ -112,6 +112,23 @@ PKG_CHECK_MODULES([BOOSTER_QT], [
 
 fi
 
+AC_ARG_ENABLE([cpp-booster],
+        [AS_HELP_STRING([--enable-cpp-booster],
+                        [link with libstdc++ to reduce runtime linker time])],
+        [case "${enableval}" in
+          (yes) cpp_booster=true ;;
+          (no)  cpp_booster=false ;;
+          (*) AC_MSG_ERROR([bad value ${enableval} for --enable-cpp-booster]) ;;
+        esac], [cpp_booster=false])
+AM_CONDITIONAL([USE_CPP_BOOSTER], [test x$cpp_booster = xtrue])
+
+if test x$cpp_booster = xtrue
+then
+
+AC_CHECK_LIB(stdc++, main,,AC_MSG_ERROR(gdu requires libstdc++))
+
+fi
+
 #
 # Test client program
 #

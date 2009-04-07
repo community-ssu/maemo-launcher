@@ -19,7 +19,7 @@ endif
 ifneq (,$(findstring nohildon,$(DEB_BUILD_OPTIONS)))
 	opt_hildon :=
 else
-	opt_hildon := --enable-hildon-booster
+	opt_hildon := --enable-hildon-booster --enable-cpp-booster
 endif
 
 # Nasty thing due to having the upstream and debian stuff merged.
