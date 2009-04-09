@@ -14,6 +14,7 @@ AM_INIT_AUTOMAKE([1.7 foreign])
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -103,6 +104,7 @@ BOOSTER_QT_DEPENDS="
 	QtDBus
 	QtGui
 "
+
 if test x$qt_booster = xtrue
 then
 
@@ -110,23 +112,24 @@ PKG_CHECK_MODULES([BOOSTER_QT], [
 	$BOOSTER_QT_DEPENDS
 ])
 
-fi
+fi 
 
 AC_ARG_ENABLE([cpp-booster],
-        [AS_HELP_STRING([--enable-cpp-booster],
-                        [link with libstdc++ to reduce runtime linker time])],
-        [case "${enableval}" in
-          (yes) cpp_booster=true ;;
-          (no)  cpp_booster=false ;;
-          (*) AC_MSG_ERROR([bad value ${enableval} for --enable-cpp-booster]) ;;
-        esac], [cpp_booster=false])
+	[AS_HELP_STRING([--enable-cpp-booster],
+		[link with libstdc++ to reduce runtime linker time])],
+	[case "${enableval}" in
+		(yes) cpp_booster=true ;;
+		(no)  cpp_booster=false ;;
+		(*) AC_MSG_ERROR([bad value ${enableval} for --enable-cpp-booster]) ;;
+	esac], [cpp_booster=false])
 AM_CONDITIONAL([USE_CPP_BOOSTER], [test x$cpp_booster = xtrue])
 
+# This is a hack..
 if test x$cpp_booster = xtrue
 then
-
-AC_CHECK_LIB(stdc++, main,,AC_MSG_ERROR(gdu requires libstdc++))
-
+GLIBS=$LIBS
+AC_CHECK_LIB(stdc++, main,,AC_MSG_ERROR(gdu configure option requires libstdc++))
+LIBS=$GLIBS
 fi
 
 #
