@@ -44,11 +44,9 @@ if USE_CPP_BOOSTER
 booster_PROGRAMS += booster-cpp.so
 endif
 
-booster_cpp_so_SOURCES = booster_cpp.c
-booster_cpp_so_CFLAGS = -fPIC
+booster_cpp_so_SOURCES = booster_cpp.cpp
+booster_cpp_so_CPPFLAGS = -fPIC
 booster_cpp_so_LDFLAGS = -shared -fPIC
-booster_cpp_so_CPPFLAGS = $(BOOSTER_CPP_CFLAGS)
-booster_cpp_so_LDADD = $(BOOSTER_CPP_LIBS) -lstdc++
 
 bin_PROGRAMS = maemo-launcher maemo-invoker maemo-summoner
 
