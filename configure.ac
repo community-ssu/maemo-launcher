@@ -1,11 +1,8 @@
 ## Process this file with autoconf to produce a configure script.
 #
-# $Id$
-#
 
-AC_INIT([maemo-launcher], [0.32])
+AC_INIT([maemo-launcher], [0.34])
 AC_PREREQ([2.59])
-AC_REVISION([$Revision$])
 AC_CONFIG_SRCDIR([launcher/launcher.c])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
@@ -41,10 +38,8 @@ AC_MSG_RESULT([$prctl])
 # Launcher dependencies
 #
 
-DBUS_DEPENDS="dbus-1 >= 0.60"
-
 PKG_CHECK_MODULES([DBUS], [
-	$DBUS_DEPENDS
+	dbus-1 >= 0.60
 ])
 
 #
@@ -60,34 +55,38 @@ AC_ARG_ENABLE([hildon-booster],
 	  (*) AC_MSG_ERROR([bad value ${enableval} for --enable-hildon-booster]) ;;
 	esac], [hildon_booster=false])
 
-GTK_DEPENDS="
+PKG_CHECK_MODULES([BOOSTER_GTK], [
 	gtk+-2.0 >= 2.6.4
 	fontconfig
 	xft
 	pangoxft
-"
-HILDON_DEPENDS="$GTK_DEPENDS
-	gnome-vfs-2.0 >= 2.8.0
-	clinkc
-	libgtkhtml-3.8
-	libosso
-	libhildonmime
-	hildon-help
-	hildon-fm-2
-	libhildondesktop-1
-	hildon-1
-"
+])
 
 if test x$hildon_booster = xtrue
 then
-  BOOSTER_GTK_DEPENDS=$HILDON_DEPENDS
-else
-  BOOSTER_GTK_DEPENDS=$GTK_DEPENDS
-fi
 
-PKG_CHECK_MODULES([BOOSTER_GTK], [
-	$BOOSTER_GTK_DEPENDS
+PKG_CHECK_MODULES([BOOSTER_HILDON], [
+	libdrm
+	xcomposite
+	xdamage
+	xv
+	liboil-0.3
+	bluez
+	libpulse
+	alarm
+	gstreamer-base-0.10
+	gstreamer-controller-0.10
+	gnome-vfs-2.0 >= 2.8.0
+	clinkc
+	libgtkhtml-3.14
+	libosso
+	libhildonmime
+	hildon-fm-2
+	libhildondesktop-1
+	hildon-1
 ])
+
+fi
 
 AC_ARG_ENABLE([qt-booster],
 	[AS_HELP_STRING([--enable-qt-booster],
@@ -99,17 +98,13 @@ AC_ARG_ENABLE([qt-booster],
 	esac], [qt_booster=false])
 AM_CONDITIONAL([USE_QT_BOOSTER], [test x$qt_booster = xtrue])
 
-BOOSTER_QT_DEPENDS="
-	QtCore
-	QtDBus
-	QtGui
-"
-
 if test x$qt_booster = xtrue
 then
 
 PKG_CHECK_MODULES([BOOSTER_QT], [
-	$BOOSTER_QT_DEPENDS
+	QtCore
+	QtDBus
+	QtGui
 ])
 
 fi 
@@ -124,7 +119,6 @@ AC_ARG_ENABLE([cpp-booster],
 	esac], [cpp_booster=false])
 AM_CONDITIONAL([USE_CPP_BOOSTER], [test x$cpp_booster = xtrue])
 
-# This is a hack..
 if test x$cpp_booster = xtrue
 then
 GLIBS=$LIBS
@@ -148,6 +142,12 @@ AC_ARG_ENABLE([pie],
 	  *) AC_MSG_ERROR([bad value ${enableval} for --enable-pie]) ;;
 	esac], [pie=false])
 AM_CONDITIONAL([USE_PIE], [test x$pie = xtrue])
+
+PKG_CHECK_MODULES([APP_HILDON], [
+	gtk+-2.0 >= 2.6.4
+	hildon-1
+], [build_app_hildon=true], [build_app_hildon=false])
+AM_CONDITIONAL([BUILD_APP_HILDON], [test x$build_app_hildon = xtrue])
 
 AC_ARG_ENABLE([client],
 	[AS_HELP_STRING([--enable-client],
