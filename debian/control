@@ -9,7 +9,6 @@ Build-Depends: debhelper (>= 5.0.0), libgtk2.0-dev (>= 2.6.4),
  libbluetooth3-dev, libpulse-dev, libalarm-dev, libgstreamer0.10-dev,
  gtkhtml3.14-dev, clinkc-dev, libosso-dev, libosso-gnomevfs2-dev (>= 2.8.0),
  libhildon1-dev, libhildonmime-dev, libhildonfm2-dev, libhildondesktop1-dev
-
 # To build the QT Booster we need libqt4-dev
 Standards-Version: 3.7.2
 
