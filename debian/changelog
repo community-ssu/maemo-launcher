@@ -1,15 +1,9 @@
-maemo-launcher (0.34-2) unstable; urgency=low
+maemo-launcher (0.35-1) unstable; urgency=low
 
   * Adds cpp booster (Fixes: #108695)
+  * Reconstruct svn tree (duh)
 
  -- Janne Karhunen <Janne.Karhunen@nokia.com>  Tue, 07 Apr 2009 13:36:27 +0300
-
-maemo-launcher (0.34-1+0m5) unstable; urgency=low
-
-  * This entry has been added by BIFH queue processor
-    Suffix +0m5 added to package revision
-
- -- pekka lundstrom <pekka.lundstrom@nokia.com>  Wed, 18 Mar 2009 12:47:22 +0200
 
 maemo-launcher (0.34-1) unstable; urgency=low
 
