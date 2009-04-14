@@ -1,7 +1,5 @@
 /*
- * $Id$
- *
- * Copyright (C) 2005, 2006 Nokia Corporation
+ * Copyright © 2005, 2006, 2009 Nokia Corporation
  *
  * Author: Guillem Jover <guillem.jover@nokia.com>
  *
@@ -45,7 +43,9 @@ char *invoke_recv_str(int fd);
 #define INVOKER_MSG_NAME		0x5a5e0000
 #define INVOKER_MSG_EXEC		0xe8ec0000
 #define INVOKER_MSG_ARGS		0xa4650000
+#define INVOKER_MSG_ENV			0xe5710000
 #define INVOKER_MSG_PRIO		0xa1ce0000
+#define INVOKER_MSG_IO			0x10fd0000
 #define INVOKER_MSG_END			0xdead0000
 #define INVOKER_MSG_PID			0x1d1d0000
 #define INVOKER_MSG_EXIT		0xe4170000

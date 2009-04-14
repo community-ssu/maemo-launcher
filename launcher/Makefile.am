@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 #
-# $Id$
-#
 
 helperdir = $(libdir)/maemo-launcher
 helper_PROGRAMS = defender
@@ -27,8 +25,8 @@ booster_null_so_LDFLAGS = -shared -fPIC
 booster_gtk_so_SOURCES = booster_gtk.c booster_gtk.h
 booster_gtk_so_CFLAGS = -fPIC
 booster_gtk_so_LDFLAGS = -shared -fPIC
-booster_gtk_so_CPPFLAGS = $(BOOSTER_GTK_CFLAGS)
-booster_gtk_so_LDADD = $(BOOSTER_GTK_LIBS)
+booster_gtk_so_CPPFLAGS = $(BOOSTER_GTK_CFLAGS) $(BOOSTER_HILDON_CFLAGS)
+booster_gtk_so_LDADD = $(BOOSTER_GTK_LIBS) $(BOOSTER_HILDON_LIBS)
 
 if USE_QT_BOOSTER
 booster_PROGRAMS += booster-qt.so

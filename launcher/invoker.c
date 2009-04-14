@@ -1,7 +1,5 @@
 /*
- * $Id$
- *
- * Copyright (C) 2005, 2006, 2007, 2008 Nokia Corporation
+ * Copyright © 2005, 2006, 2007, 2008, 2009 Nokia Corporation
  *
  * Author: Guillem Jover <guillem.jover@nokia.com>
  *
@@ -30,6 +28,7 @@
 #include <signal.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/uio.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <unistd.h>
@@ -188,6 +187,60 @@ invoker_send_prio(int fd, int prio)
   invoke_send_msg(fd, prio);
 
   invoke_recv_ack(fd);
+
+  return true;
+}
+
+static bool
+invoker_send_io(int fd)
+{
+  struct msghdr msg = { 0 };
+  struct cmsghdr *cmsg;
+  int io[3] = { 0, 1, 2 };
+  char buf[CMSG_SPACE(sizeof(io))];
+  struct iovec iov;
+  int dummy;
+
+  iov.iov_base = &dummy;
+  iov.iov_len = 1;
+
+  msg.msg_iov = &iov;
+  msg.msg_iovlen = 1;
+  msg.msg_control = buf;
+  msg.msg_controllen = sizeof(buf);
+
+  cmsg = CMSG_FIRSTHDR(&msg);
+  cmsg->cmsg_len = CMSG_LEN(sizeof(io));
+  cmsg->cmsg_level = SOL_SOCKET;
+  cmsg->cmsg_type = SCM_RIGHTS;
+
+  memcpy(CMSG_DATA(cmsg), io, sizeof(io));
+
+  msg.msg_controllen = cmsg->cmsg_len;
+
+  invoke_send_msg(fd, INVOKER_MSG_IO);
+  if (sendmsg(fd, &msg, 0) < 0)
+  {
+    warning("sendmsg failed in invoker_send_io: %s", strerror(errno));
+    return  false;
+  }
+
+  return true;
+}
+
+static bool
+invoker_send_env(int fd)
+{
+  int i, n_vars;
+
+  /* Count the amount of environment variables. */
+  for (n_vars = 0; environ[n_vars] != NULL; n_vars++) ;
+
+  /* Send action. */
+  invoke_send_msg(fd, INVOKER_MSG_ENV);
+  invoke_send_msg(fd, n_vars);
+  for (i = 0; i < n_vars; i++)
+    invoke_send_str(fd, environ[i]);
 
   return true;
 }
@@ -412,6 +465,8 @@ main(int argc, char *argv[])
   invoker_send_exec(fd, prog_name);
   invoker_send_args(fd, prog_argc, prog_argv);
   invoker_send_prio(fd, prog_prio);
+  invoker_send_io(fd);
+  invoker_send_env(fd);
   invoker_send_end(fd);
 
   if (launch)

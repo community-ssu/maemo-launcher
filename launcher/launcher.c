@@ -1,7 +1,5 @@
 /*
- * $Id$
- *
- * Copyright (C) 2005, 2006, 2007, 2008 Nokia Corporation
+ * Copyright © 2005, 2006, 2007, 2008, 2009 Nokia Corporation
  *
  * Authors: Michael Natterer <mitch@imendio.com>
  *          Guillem Jover <guillem.jover@nokia.com>
@@ -35,6 +33,7 @@
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/uio.h>
 #include <sys/resource.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -92,7 +91,7 @@ oom_unprotect(void)
   if (write(fd, OOM_ENABLE, strlen(OOM_ENABLE)) < 0)
   {
     if (errno == EPERM)
-      error("kernel w/o support for user processes rising the oom value\n");
+      error("kernel w/o support for user processes raising the oom value\n");
     else
       error("could not write to file '%s'\n", filename);
   }
@@ -122,7 +121,7 @@ rise_oom_defense(pid_t pid)
     return true;
   else
   {
-    warning("rising the oom shield for pid=%d status=%d\n", pid, status);
+    warning("raising the oom shield for pid=%d status=%d\n", pid, status);
     return false;
   }
 }
@@ -131,6 +130,7 @@ static void
 launch_process(prog_t *prog)
 {
   int cur_prio;
+  int i;
 
   /* Possibly restore process priority. */
   errno = 0;
@@ -149,10 +149,18 @@ launch_process(prog_t *prog)
   debug("launching process: '%s'\n", prog->filename);
 
 #ifdef DEBUG
+  for (i = 0; i < 3; i++)
+    if (prog->io[i] > 0)
+      debug("redirecting stdio[%d] to %d\n", i, prog->io[i]);
+
   report_set_output(report_console);
 #else
   report_set_output(report_none);
 #endif
+
+  for (i = 0; i < 3; i++)
+    if (prog->io[i] > 0)
+      dup2(prog->io[i], i);
 
   exit(prog->entry(prog->argc, prog->argv));
 }
@@ -296,6 +304,87 @@ invoked_get_prio(int fd, prog_t *prog)
 }
 
 static bool
+invoked_get_io(int fd, prog_t *prog)
+{
+  struct msghdr msg = { 0 };
+  struct cmsghdr *cmsg;
+  char buf[CMSG_SPACE(sizeof(prog->io))];
+  struct iovec iov;
+  int dummy;
+
+  iov.iov_base = &dummy;
+  iov.iov_len = 1;
+
+  msg.msg_iov = &iov;
+  msg.msg_iovlen = 1;
+  msg.msg_control = buf;
+  msg.msg_controllen = sizeof(buf);
+
+  cmsg = CMSG_FIRSTHDR(&msg);
+  cmsg->cmsg_len = CMSG_LEN(sizeof(prog->io));
+  cmsg->cmsg_level = SOL_SOCKET;
+  cmsg->cmsg_type = SCM_RIGHTS;
+
+  memcpy(CMSG_DATA(cmsg), prog->io, sizeof(prog->io));
+
+  if (recvmsg(fd, &msg, 0) < 0)
+  {
+    warning("recvmsg failed in invoked_get_io: %s", strerror(errno));
+    return false;
+  }
+
+  if (msg.msg_flags)
+  {
+    warning("unexpected msg flags in invoked_get_io");
+    return false;
+  }
+
+  cmsg = CMSG_FIRSTHDR(&msg);
+  if (cmsg == NULL || cmsg->cmsg_len != CMSG_LEN(sizeof(prog->io)) ||
+      cmsg->cmsg_level != SOL_SOCKET || cmsg->cmsg_type != SCM_RIGHTS)
+  {
+    warning("invalid cmsg in invoked_get_io");
+    return false;
+  }
+
+  memcpy(prog->io, CMSG_DATA(cmsg), sizeof(prog->io));
+
+  return true;
+}
+
+static bool
+invoked_get_env(int fd, prog_t *prog)
+{
+  int i;
+  uint32_t n_vars;
+
+  /* Get number of environment variables. */
+  invoke_recv_msg(fd, &n_vars);
+
+  /* Get environ. */
+  for (i = 0; i < n_vars; i++)
+  {
+    char *var;
+
+    var = invoke_recv_str(fd);
+    if (var == NULL)
+    {
+      error("receiving environ[%i]\n", i);
+      return false;
+    }
+
+    debug("setting environment variable '%s'\n", var);
+
+    /* In case of error, just warn and try to continue, as the other side is
+     * going to keep sending the reset of the message. */
+    if (putenv(var) != 0)
+      warning("allocating environment variable");
+  }
+
+  return true;
+}
+
+static bool
 invoked_send_action(int fd, int action, int value)
 {
   invoke_send_msg(fd, action);
@@ -328,8 +417,14 @@ invoked_get_actions(int fd, prog_t *prog)
     case INVOKER_MSG_ARGS:
       invoked_get_args(fd, prog);
       break;
+    case INVOKER_MSG_ENV:
+      invoked_get_env(fd, prog);
+      break;
     case INVOKER_MSG_PRIO:
       invoked_get_prio(fd, prog);
+      break;
+    case INVOKER_MSG_IO:
+      invoked_get_io(fd, prog);
       break;
     case INVOKER_MSG_END:
       invoke_send_msg(fd, INVOKER_MSG_ACK);
@@ -932,6 +1027,10 @@ main(int argc, char *argv[])
 
     /* Start conversation with the invoker. */
     memset(&prog, 0, sizeof(prog));
+    prog.io[0] = -1;
+    prog.io[1] = -1;
+    prog.io[2] = -1;
+
     if (!invoked_get_magic(sd, &prog))
     {
       close(sd);

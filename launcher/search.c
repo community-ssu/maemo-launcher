@@ -1,7 +1,5 @@
 /*
- * $Id$
- *
- * Copyright (C) 2007 Nokia Corporation
+ * Copyright © 2007 Nokia Corporation
  *
  * Contact: Guillem Jover <guillem.jover@nokia.com>
  *
