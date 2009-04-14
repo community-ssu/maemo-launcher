@@ -1,19 +1,24 @@
 ## Process this file with automake to produce Makefile.in
-#
-# $Id$
-#
 
-bin_PROGRAMS = maemo-client
-
-sources = client.c
-version_script = client.Version
+version_script = app.Version
 
 EXTRA_DIST = $(version_script)
 
-maemo_client_SOURCES = $(sources)
-maemo_client_CPPFLAGS = $(CLIENT_CFLAGS) $(PIC)
-maemo_client_LDFLAGS = \
-	-rdynamic -Wl,--version-script=$(version_script) \
+bin_PROGRAMS = app-console
+
+app_console_CPPFLAGS = $(PIC)
+app_console_LDFLAGS = \
+	-rdynamic -Wl,--version-script=$(srcdir)/$(version_script) \
 	-shared $(PIC)
-maemo_client_LDADD = $(CLIENT_LIBS)
+
+if BUILD_APP_HILDON
+bin_PROGRAMS += app-hildon
+
+app_hildon_SOURCES = app-hildon.c
+app_hildon_CPPFLAGS = $(APP_HILDON_CFLAGS) $(PIC)
+app_hildon_LDFLAGS = \
+	-rdynamic -Wl,--version-script=$(srcdir)/$(version_script) \
+	-shared $(PIC)
+app_hildon_LDADD = $(APP_HILDON_LIBS)
+endif
 
