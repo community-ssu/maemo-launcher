@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 #
-# $Id$
-#
 
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
@@ -61,6 +59,9 @@ install: build
 	
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 	
+	install -D $(CURDIR)/debian/maemo-launcher.Xsession \
+		$(CURDIR)/debian/tmp/etc/X11/Xsession.d/02maemo-launcher
+	
 	cp $(CURDIR)/debian/dh_maemolauncher \
 	   $(CURDIR)/debian/tmp/usr/bin
 	cp $(CURDIR)/debian/dh_maemolauncher.1 \
@@ -69,7 +70,7 @@ install: build
 binary-indep: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs -i ChangeLog
+	dh_installchangelogs -i ChangeLog*
 	dh_installdocs -i
 	dh_install -i --sourcedir=$(CURDIR)/debian/tmp
 	dh_link -i
@@ -83,7 +84,7 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs -a ChangeLog
+	dh_installchangelogs -a ChangeLog*
 	dh_installdocs -a
 	dh_installexamples -a
 	dh_install -a --sourcedir=$(CURDIR)/debian/tmp
@@ -91,7 +92,7 @@ binary-arch: build install
 	dh_installinit -a --no-start -- start 45 2 3 4 . stop 45 0 1 5 6 .
 	dh_installman -a
 	dh_link -a
-	dh_strip --dbg-package=maemo-launcher
+	dh_strip -p maemo-launcher --dbg-package=maemo-launcher-dbg
 	dh_compress -a
 	dh_fixperms -a
 	chmod u+s $(CURDIR)/debian/maemo-launcher/usr/lib/maemo-launcher/defender
