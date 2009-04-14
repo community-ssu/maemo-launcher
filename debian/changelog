@@ -1,6 +1,6 @@
 maemo-launcher (0.35-1) unstable; urgency=low
 
-  * Adds cpp booster (Fixes: #108695)
+  * Adds cpp booster (Fixes: NB#108695)
   * Reconstruct svn tree (duh)
 
  -- Janne Karhunen <Janne.Karhunen@nokia.com>  Tue, 07 Apr 2009 13:36:27 +0300
