@@ -1,8 +1,50 @@
-maemo-launcher (0.32-2) unstable; urgency=low
+maemo-launcher (0.34-2) unstable; urgency=low
 
   * Adds cpp booster (Fixes: #108695)
 
  -- Janne Karhunen <Janne.Karhunen@nokia.com>  Tue, 07 Apr 2009 13:36:27 +0300
+
+maemo-launcher (0.34-1+0m5) unstable; urgency=low
+
+  * This entry has been added by BIFH queue processor
+    Suffix +0m5 added to package revision
+
+ -- pekka lundstrom <pekka.lundstrom@nokia.com>  Wed, 18 Mar 2009 12:47:22 +0200
+
+maemo-launcher (0.34-1) unstable; urgency=low
+
+  * New upstream release.
+    - Make the hildon booster link against: libdrm, xcomposite, xdamage, xv,
+      gstreamer-base-0.10, gstreamer-controller-0.10, liboil-0.3, bluez,
+      libpulse, and alarm. (Fixes: NB#96648)
+  * Use ${binary:Version} instead of deprecated ${Source-Version}.
+  * Switch to debhelper compatibility level 5.
+    - Fix dh_strip --dbg-package argument to be the debug package.
+  * Rename debian/init.d to debian/maemo-launcher.init.
+  * Remove obsolete libhildonhelp-dev. Fixes: NB#105122
+
+ -- Guillem Jover <guillem.jover@nokia.com>  Tue, 17 Mar 2009 20:13:27 +0200
+
+maemo-launcher (0.33-1) unstable; urgency=low
+
+  * New upstream release.
+    - Remove RCS keywords.
+    - Use UTF-8 copyright symbol.
+    - Rename client test application to to app-hildon.
+    - Add a new app-console test client.
+    - Connect stdio descriptors from invoked program to the invoker.
+    - Forward environment variables from invoker to the launcher.
+      (Fixes: NB#92995)
+  * Take over Xsession script from upstart. (Fixes: NB#103352)
+  * Reference GPL-2 from common-licenses instead of just GPL.
+  * Set Priority for maemo-launcher-dbg to extra.
+  * Improve package descriptions.
+  * Update upstream copyright years in debian/copyright.
+  * Update Build-Depends:
+    - Remove obsolete libhildonhelp-dev.
+    - Rename gtkhtml-dev to gtkhtml3.14-dev. (Fixes: NB#105122)
+
+ -- Guillem Jover <guillem.jover@nokia.com>  Tue, 10 Mar 2009 22:30:43 +0200
 
 maemo-launcher (0.32-1) unstable; urgency=low
 
