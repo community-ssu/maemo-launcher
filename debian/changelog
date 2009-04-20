@@ -1,3 +1,9 @@
+maemo-launcher (0.35-2) unstable; urgency=low
+
+  * Fix typo in booster initialization
+
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Mon, 20 Apr 2009 11:48:57 +0300
+
 maemo-launcher (0.35-1) unstable; urgency=low
 
   * Adds cpp booster (Fixes: NB#108695)
