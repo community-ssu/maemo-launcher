@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "${LOCALE_SET_BY_SUW}" = "yes" ] ;
+then
+  kill -15 `pidof maemo-launcher`
+  sleep 2
+  . /etc/X11/Xsession.d/02maemo-launcher
+fi

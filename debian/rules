@@ -61,6 +61,9 @@ install: build
 	
 	install -D $(CURDIR)/debian/maemo-launcher.Xsession \
 		$(CURDIR)/debian/tmp/etc/X11/Xsession.d/02maemo-launcher
+
+	install -D $(CURDIR)/debian/maemo-launcher.Xsession-restart \
+		$(CURDIR)/debian/tmp/etc/X11/Xsession.d/42maemo-launcher
 	
 	cp $(CURDIR)/debian/dh_maemolauncher \
 	   $(CURDIR)/debian/tmp/usr/bin
