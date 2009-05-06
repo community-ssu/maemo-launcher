@@ -1,7 +1,7 @@
 maemo-launcher (0.35-3) unstable; urgency=low
 
-  * Suw restart support. Fixes NB#110612
-  * Fix missing 'ApplicationDied' NB#113378
+  * Suw restart support, Fixes: NB#110612
+  * Omit missing 'ApplicationDied', Fixes: NB#113378
 
  -- Janne Karhunen <Janne.Karhunen@nokia.com>  Mon, 04 May 2009 12:49:28 +0300
 
