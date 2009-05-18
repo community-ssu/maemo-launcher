@@ -1,3 +1,9 @@
+maemo-launcher (0.35-4) unstable; urgency=low
+
+  * Remove obsolete fork from 'appdied'
+
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Mon, 18 May 2009 09:43:55 +0300
+
 maemo-launcher (0.35-3) unstable; urgency=low
 
   * Suw restart support, Fixes: NB#110612
