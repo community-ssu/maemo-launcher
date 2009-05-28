@@ -20,14 +20,32 @@
  *
  */
 
-extern "C" {
-
 #include <stdio.h>
+#include <iostream>
+#include <string>
+#include <map>
+#include <set>
+#include <list>
+#include <vector>
+#include <deque>
 
 #include "booster.h"
 #include "report.h"
 
 booster_api_t booster_cpp_api;
+
+static void cpp_init (void)
+{
+  std::string                str;
+  std::vector<int>           vec;
+  std::list<int>             list;
+  std::deque<int>            que;
+  std::map<int,int>          map;
+  std::multimap<int,int,int> mmap;
+  std::set<int,int>          set;
+}
+
+extern "C" {
 
 static booster_state_t
 booster_cpp_preinit(int *argc, char ***argv)
@@ -41,6 +59,8 @@ static void
 booster_cpp_init(const char *progfilename, const booster_state_t state)
 {
   debug("booster CPP module init (%s)\n", progfilename);
+
+  cpp_init();
 }
 
 static void
