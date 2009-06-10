@@ -1,7 +1,8 @@
 /*
  * Copyright © 2005, 2006, 2007, 2008 Nokia Corporation
  *
- * Authors: Guillem Jover <guillem.jover@nokia.com>
+ * Authors: Guillem Jover <guillem.jover@nokia.com>,
+ *          Janne Karhunen <janne.karhunen@nokia.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 #ifdef HAVE_PRCTL_SET_NAME
 #include <sys/prctl.h>
 #endif
@@ -29,6 +33,8 @@
 
 #include "report.h"
 #include "prog.h"
+
+typedef unsigned long long ulong64;
 
 #ifdef DEBUG
 extern char **environ;
@@ -51,20 +57,44 @@ print_prog_env_argv(prog_t *prog)
 }
 #endif
 
+ulong64  __attribute__ ((visibility ("hidden")))
+gettime_us (void)
+{
+  struct timeval tv;
+  ulong64 rc;
+  int r;
+
+  r = gettimeofday(&tv,0);
+  if ( r<0 )
+    return 0;
+
+  rc  = tv.tv_sec;
+  rc *= 1000000;
+  rc += tv.tv_usec;
+
+  return rc;
+}
+
 void
 load_main(prog_t *prog)
 {
   void *module;
   char *error_s;
+  ulong64 tv2,tv1;
 
-  /* Load the launched application. */
-  module = dlopen(prog->filename, RTLD_LAZY | RTLD_GLOBAL);
+  tv1 = gettime_us();
+  module = dlopen (prog->filename, RTLD_LAZY|RTLD_LOCAL|RTLD_DEEPBIND);
+
   if (!module)
     die(1, "loading invoked application: '%s'\n", dlerror());
 
   dlerror();
   prog->entry = (entry_t)dlsym(module, "main");
   error_s = dlerror();
+
+  tv2 = gettime_us();
+  info("opening of %s took %llu microseconds\n", prog->filename, tv2-tv1);
+
   if (error_s != NULL)
     die(1, "loading symbol 'main': '%s'\n", error_s);
 }

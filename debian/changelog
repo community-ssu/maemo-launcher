@@ -1,3 +1,10 @@
+maemo-launcher (0.35-5) unstable; urgency=low
+
+  * Add timestamping to dlopen calls
+  * Use local instead of global lookup scope  
+
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Mon, 27 May 2009 09:43:55 +0300
+
 maemo-launcher (0.35-4) unstable; urgency=low
 
   * Remove obsolete fork from 'appdied'
