@@ -93,7 +93,7 @@ load_main(prog_t *prog)
   error_s = dlerror();
 
   tv2 = gettime_us();
-  info("opening of %s took %llu microseconds\n", prog->filename, tv2-tv1);
+  info("opening of %s took %llu usec\n", prog->filename, tv2-tv1);
 
   if (error_s != NULL)
     die(1, "loading symbol 'main': '%s'\n", error_s);
