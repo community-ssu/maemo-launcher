@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 #
 
-AC_INIT([maemo-launcher], [0.34])
+AC_INIT([maemo-launcher], [0.35])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([launcher/launcher.c])
 AC_CONFIG_AUX_DIR([config])
