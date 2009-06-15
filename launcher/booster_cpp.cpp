@@ -36,7 +36,6 @@ booster_api_t booster_cpp_api;
 
 static void cpp_init (void)
 {
-/*
   std::string                str;
   std::vector<int>           vec;
   std::list<int>             list;
@@ -44,7 +43,6 @@ static void cpp_init (void)
   std::map<int,int>          map;
   std::multimap<int,int,int> mmap;
   std::set<int,int>          set;
-*/
 }
 
 extern "C" {
@@ -62,7 +60,7 @@ booster_cpp_init(const char *progfilename, const booster_state_t state)
 {
   debug("booster CPP module init (%s)\n", progfilename);
 
-//  cpp_init();
+  cpp_init();
 }
 
 static void
