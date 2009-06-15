@@ -31,13 +31,9 @@ comm_dbus_send_app_died(char *filename, int pid, int status)
   DBusConnection *conn;
   DBusMessage *msg;
 
-  info("%s: %s pid %d\n", __FUNCTION__, filename, pid );
-
   conn = dbus_bus_get(DBUS_BUS_SESSION, NULL);
   if (conn == NULL)
     die(1, "%s: getting dbus bus\n", __FUNCTION__);
-
-  info("%s: bus %x\n", __FUNCTION__, conn);
 
   msg = dbus_message_new_signal(LAUNCHER_PATH,
 				LAUNCHER_IFACE,
@@ -64,7 +60,6 @@ comm_dbus_send_app_died(char *filename, int pid, int status)
 void
 comm_send_app_died(char *filename, int pid, int status)
 {
-/*
   pid_t cpid;
 
   cpid = fork();
@@ -73,9 +68,7 @@ comm_send_app_died(char *filename, int pid, int status)
     comm_dbus_send_app_died(filename, pid, status);
     _exit(0);
   }
-  waitpid(pid);
-*/
-  comm_dbus_send_app_died(filename, pid, status);
+ // waitpid(pid);
 }
 
 #ifdef TEST
