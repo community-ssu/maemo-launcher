@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <glib/gmacros.h>
 #include <glib/gquark.h>
+#include <gio/gio.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <fontconfig/fontconfig.h>
@@ -201,6 +202,7 @@ timestamp_func(gpointer data)
 static void
 booster_gtk_init(const char *progfilename, const booster_state_t state)
 {
+  GVolumeMonitor *gv;
   char *progname;
 #ifdef DEBUG
   GTimer *ltimer;
@@ -218,6 +220,8 @@ booster_gtk_init(const char *progfilename, const booster_state_t state)
   gdk_set_program_class(progname);
 
   free(progname);
+
+  gv = g_volume_monitor_get();
 }
 
 static void
