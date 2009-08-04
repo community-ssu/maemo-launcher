@@ -65,7 +65,8 @@ maemo_launcher_CPPFLAGS = \
 	-DPROG_NAME="\"maemo-launcher\"" \
 	-DBOOSTER_DIR=$(BOOSTER_DIR) \
 	-DBOOSTER_DEFAULT="\"null\"" \
-	-DDEFENDER=$(DEFENDER)
+	-DDEFENDER=$(DEFENDER) \
+	-DHAVE_PRCTL_SET_NAME
 maemo_launcher_LDADD = -ldl $(DBUS_LIBS)
 # FIXME: Use rdynamic for now until the boosters do not use the report
 #        functions.
