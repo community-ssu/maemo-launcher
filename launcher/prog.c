@@ -83,7 +83,7 @@ load_main(prog_t *prog)
   ulong64 tv2,tv1;
 
   tv1 = gettime_us();
-  module = dlopen (prog->filename, RTLD_LAZY|RTLD_LOCAL|RTLD_DEEPBIND);
+  module = dlopen (prog->filename, RTLD_LAZY|RTLD_GLOBAL);
 
   if (!module)
     die(1, "loading invoked application: '%s'\n", dlerror());
