@@ -58,33 +58,34 @@ AC_ARG_ENABLE([hildon-booster],
 PKG_CHECK_MODULES([BOOSTER_GTK], [
 	gtk+-2.0 >= 2.6.4
 	fontconfig
-	xft
-	pangoxft
 ])
 
 if test x$hildon_booster = xtrue
 then
 
 PKG_CHECK_MODULES([BOOSTER_HILDON], [
-	libdrm
-	xcomposite
-	xdamage
-	xv
-	liboil-0.3
-	bluez
+	glib-2.0
+	gio-2.0
 	libpulse
-	alarm
-	gstreamer-base-0.10
-	gstreamer-controller-0.10
 	gnome-vfs-2.0 >= 2.8.0
-	clinkc
-	libgtkhtml-3.14
+	alarm
 	libosso
 	libhildonmime
 	hildon-fm-2
 	libhildondesktop-1
 	hildon-1
+	libi18n
+	telepathy-glib
+	libedataserver-1.2
+	libedata-book-1.2
+	libmodest-dbus-client-1.0
+	sqlite3
+	conic
 ])
+
+# Hack to add some more common items not available via pkg-config.
+
+LIBS="$LIBS -ljpeg -lgvfscommon"
 
 fi
 

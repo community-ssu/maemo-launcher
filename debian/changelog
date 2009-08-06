@@ -1,9 +1,16 @@
+maemo-launcher (0.35-6) unstable; urgency=low
+
+  * Revise hildon booster library listing, Fixes: NB#129909
+
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Tue, 04 Aug 2009 10:25:04 +0300
+
 maemo-launcher (0.35-5) unstable; urgency=low
 
   * Add timestamping to dlopen calls
-  * Use local instead of global lookup scope  
+  * Initialize gnome volume manager (Fixes: NB#129288)
+  * Do not link against clinkc (Fixes: NB#128425)  
 
- -- Janne Karhunen <Janne.Karhunen@nokia.com>  Mon, 27 May 2009 09:43:55 +0300
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Fri, 24 Jul 2009 09:02:02 +0300
 
 maemo-launcher (0.35-4) unstable; urgency=low
 
