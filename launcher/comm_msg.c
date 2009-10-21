@@ -272,14 +272,15 @@ comm_msg_get_str(comm_msg_t *msg, const char **str_r)
 bool
 comm_msg_send(int fd, comm_msg_t *msg)
 {
-  write(fd, &msg->used, sizeof(msg->used));
-  write(fd, msg->buf, msg->used);
+  const bool result =
+  	(sizeof(msg->used) == (uint32_t)write(fd, &msg->used, sizeof(msg->used))) &&
+	(msg->used == (uint32_t)write(fd, msg->buf, msg->used));
 
 #if DEBUG
   comm_msg_print(msg, __FUNCTION__);
 #endif
 
-  return true;
+  return result;
 }
 
 bool
@@ -287,13 +288,15 @@ comm_msg_recv(int fd, comm_msg_t *msg)
 {
   uint32_t size;
 
-  read(fd, &size, sizeof(size));
+  if ( invoke_raw_read(fd, &size, sizeof(size)) )
+    return false;
 
   if (!comm_msg_grow(msg, size))
     return false;
 
-  read(fd, msg->buf, size);
   msg->used = size;
+  if ( invoke_raw_read(fd, msg->buf, size) )
+    return false;
 
 #if DEBUG
   comm_msg_print(msg, __FUNCTION__);

@@ -95,19 +95,33 @@ disable_self_core_dump(void)
     warning("could not disable self core dumping");
 }
 
+
 static bool
-invoke_recv_ack(int fd)
+__invoke_receive_marker(int fd, const uint32_t action, const char* action_name, const char* function)
 {
-  uint32_t action;
+  uint32_t marker;
 
-  /* Revceive ACK. */
-  invoke_recv_msg(fd, &action);
+  /* Receive action marker */
+  if ( !invoke_recv_msg(fd, &marker) )
+    die(1, "receiving %s action failed for %s and fd = %d: %s\n", action_name, function, fd, strerror(errno));
 
-  if (action != INVOKER_MSG_ACK)
-    die(1, "receiving wrong ack (%08x)\n", action);
-  else
-    return true;
+  /* Compare with expected */
+  if (action != marker)
+    die(1, "receiving bad marker %08x when expected %08x (%s)\n", marker, action, action_name);
+
+  return true;
+} /* __invoke_receive_marker */
+
+#define invoke_receive_marker(fd,action)	 __invoke_receive_marker(fd, action, #action, __FUNCTION__)
+
+static bool
+__invoke_recv_ack(int fd, const char* function)
+{
+  return __invoke_receive_marker(fd, INVOKER_MSG_ACK, "INVOKER_MSG_ACK", function);
 }
+
+#define invoke_recv_ack(fd)	 __invoke_recv_ack(fd, __FUNCTION__)
+
 
 static int
 invoker_init(void)
@@ -132,63 +146,42 @@ static bool
 invoker_send_magic(int fd, int options)
 {
   /* Send magic. */
-  invoke_send_msg(fd, INVOKER_MSG_MAGIC | INVOKER_MSG_MAGIC_VERSION | options);
-
-  invoke_recv_ack(fd);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_MAGIC | INVOKER_MSG_MAGIC_VERSION | options) && invoke_recv_ack(fd);
 }
 
 static bool
 invoker_send_name(int fd, char *name)
 {
   /* Send action. */
-  invoke_send_msg(fd, INVOKER_MSG_NAME);
-  invoke_send_str(fd, name);
-
-  invoke_recv_ack(fd);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_NAME) && invoke_send_str(fd, name) && invoke_recv_ack(fd);
 }
 
 static bool
 invoker_send_exec(int fd, char *exec)
 {
   /* Send action. */
-  invoke_send_msg(fd, INVOKER_MSG_EXEC);
-  invoke_send_str(fd, exec);
-
-  invoke_recv_ack(fd);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_EXEC) && invoke_send_str(fd, exec) && invoke_recv_ack(fd);
 }
 
 static bool
 invoker_send_args(int fd, int argc, char **argv)
 {
   int i;
+  bool succ;
 
   /* Send action. */
-  invoke_send_msg(fd, INVOKER_MSG_ARGS);
-  invoke_send_msg(fd, argc);
-  for (i = 0; i < argc; i++)
-    invoke_send_str(fd, argv[i]);
+  succ = invoke_send_msg(fd, INVOKER_MSG_ARGS) && invoke_send_msg(fd, argc);
+  for (i = 0; succ && i < argc; i++)
+    succ = invoke_send_str(fd, argv[i]);
 
-  invoke_recv_ack(fd);
-
-  return true;
+  return (succ && invoke_recv_ack(fd));
 }
 
 static bool
 invoker_send_prio(int fd, int prio)
 {
   /* Send action. */
-  invoke_send_msg(fd, INVOKER_MSG_PRIO);
-  invoke_send_msg(fd, prio);
-
-  invoke_recv_ack(fd);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_PRIO) && invoke_send_msg(fd, prio) && invoke_recv_ack(fd);
 }
 
 static bool
@@ -218,7 +211,12 @@ invoker_send_io(int fd)
 
   msg.msg_controllen = cmsg->cmsg_len;
 
-  invoke_send_msg(fd, INVOKER_MSG_IO);
+  if ( !invoke_send_msg(fd, INVOKER_MSG_IO) )
+  {
+    warning("invoke_send_msg failed in invoker_send_io: %s", strerror(errno));
+    return false;
+  }
+
   if (sendmsg(fd, &msg, 0) < 0)
   {
     warning("sendmsg failed in invoker_send_io: %s", strerror(errno));
@@ -232,44 +230,36 @@ static bool
 invoker_send_env(int fd)
 {
   int i, n_vars;
+  bool succ;
 
   /* Count the amount of environment variables. */
   for (n_vars = 0; environ[n_vars] != NULL; n_vars++) ;
 
   /* Send action. */
-  invoke_send_msg(fd, INVOKER_MSG_ENV);
-  invoke_send_msg(fd, n_vars);
-  for (i = 0; i < n_vars; i++)
-    invoke_send_str(fd, environ[i]);
+  succ = invoke_send_msg(fd, INVOKER_MSG_ENV) && invoke_send_msg(fd, n_vars);
+  for (i = 0; succ && i < n_vars; i++)
+    succ = invoke_send_str(fd, environ[i]);
 
-  return true;
+  return succ;
 }
 
 static bool
 invoker_send_end(int fd)
 {
   /* Send action. */
-  invoke_send_msg(fd, INVOKER_MSG_END);
-
-  invoke_recv_ack(fd);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_END) && invoke_recv_ack(fd);
 }
 
 static bool
 invoker_recv_pid(int fd)
 {
-  uint32_t action, pid;
+  uint32_t pid;
 
-  /* Receive action. */
-  invoke_recv_msg(fd, &action);
-
-  if (action != INVOKER_MSG_PID)
-    die(1, "receiving bad pid (%08x)\n", action);
-
-  /* Receive pid. */
-  invoke_recv_msg(fd, &pid);
-  invoked_pid = pid;
+  /* Receive action marker and pid */
+  if (invoke_receive_marker(fd, INVOKER_MSG_PID) && invoke_recv_msg(fd, &pid))
+    invoked_pid = pid;
+  else
+    die(1, "receiving pid (%08x) failed for fd %d: %s\n", INVOKER_MSG_PID, fd, strerror(errno));
 
   return true;
 }
@@ -277,18 +267,11 @@ invoker_recv_pid(int fd)
 static int
 invoker_recv_exit(int fd)
 {
-  uint32_t action, status;
-
-  /* Receive action. */
-  invoke_recv_msg(fd, &action);
-
-  if (action != INVOKER_MSG_EXIT)
-    die(1, "receiving bad exit status (%08x)\n", action);
-
-  /* Receive status. */
-  invoke_recv_msg(fd, &status);
-
-  return status;
+  uint32_t status;
+  if (invoke_receive_marker(fd, INVOKER_MSG_EXIT) && invoke_recv_msg(fd, &status))
+    return status;
+  else
+    die(1, "receiving status (%08x) failed for fd %d: %s\n", INVOKER_MSG_EXIT, fd, strerror(errno));
 }
 
 static uint32_t

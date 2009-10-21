@@ -30,6 +30,9 @@ bool invoke_recv_msg(int fd, uint32_t *msg);
 bool invoke_send_str(int fd, char *str);
 char *invoke_recv_str(int fd);
 
+/* read data from socket to pointed buffer. expected size bytes to be loaded. return 0 or errno */
+int invoke_raw_read(int fd, void* buffer, uint32_t size);
+
 /* FIXME: Should be '/var/run/'. */
 #define INVOKER_SOCK	"/tmp/."PACKAGE
 
@@ -50,6 +53,9 @@ char *invoke_recv_str(int fd);
 #define INVOKER_MSG_PID			0x1d1d0000
 #define INVOKER_MSG_EXIT		0xe4170000
 #define INVOKER_MSG_ACK			0x600d0000
+
+/* String length limitation */
+#define INVOKER_MAX_STRING_SIZE		(64 * 1024)
 
 #endif
 

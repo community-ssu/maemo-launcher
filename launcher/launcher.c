@@ -195,8 +195,7 @@ invoked_get_magic(int fd, prog_t *prog)
   uint32_t magic;
 
   /* Receive the magic. */
-  invoke_recv_msg(fd, &magic);
-  if ((magic & INVOKER_MSG_MASK) == INVOKER_MSG_MAGIC)
+  if (invoke_recv_msg(fd, &magic) && (magic & INVOKER_MSG_MASK) == INVOKER_MSG_MAGIC)
   {
     if ((magic & INVOKER_MSG_MAGIC_VERSION_MASK) == INVOKER_MSG_MAGIC_VERSION)
       invoke_send_msg(fd, INVOKER_MSG_ACK);
@@ -208,7 +207,7 @@ invoked_get_magic(int fd, prog_t *prog)
   }
   else
   {
-    error("receiving bad magic (%08x)\n", magic);
+    error("receiving bad magic (%08x) for fd = %d: %s\n", magic, fd, strerror(errno));
     return false;
   }
 
@@ -223,10 +222,9 @@ invoked_get_name(int fd, prog_t *prog)
   uint32_t msg;
 
   /* Get the action. */
-  invoke_recv_msg(fd, &msg);
-  if (msg != INVOKER_MSG_NAME)
+  if (invoke_recv_msg(fd, &msg) && msg != INVOKER_MSG_NAME)
   {
-    error("receiving invalid action (%08x)\n", msg);
+    error("receiving invalid action (%08x) for fd = %d: %s\n", msg, fd, strerror(errno));
     return false;
   }
 
@@ -234,9 +232,7 @@ invoked_get_name(int fd, prog_t *prog)
   if (!prog->name)
     return false;
 
-  invoke_send_msg(fd, INVOKER_MSG_ACK);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_ACK);
 }
 
 static bool
@@ -246,9 +242,7 @@ invoked_get_exec(int fd, prog_t *prog)
   if (!prog->filename)
     return false;
 
-  invoke_send_msg(fd, INVOKER_MSG_ACK);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_ACK);
 }
 
 static bool
@@ -259,7 +253,12 @@ invoked_get_args(int fd, prog_t *prog)
   size_t size;
 
   /* Get argc. */
-  invoke_recv_msg(fd, &argc);
+  if ( !invoke_recv_msg(fd, &argc) )
+  {
+    error("error in receiving number of arguments fd = %d: %s\n", fd, strerror(errno));
+    return false;
+  }
+
   prog->argc = argc;
   size = argc * sizeof(char *);
   if (size < argc)
@@ -285,9 +284,7 @@ invoked_get_args(int fd, prog_t *prog)
     }
   }
 
-  invoke_send_msg(fd, INVOKER_MSG_ACK);
-
-  return true;
+  return invoke_send_msg(fd, INVOKER_MSG_ACK);
 }
 
 static bool
@@ -295,12 +292,13 @@ invoked_get_prio(int fd, prog_t *prog)
 {
   uint32_t prio;
 
-  invoke_recv_msg(fd, &prio);
-  prog->prio = prio;
+  if ( invoke_recv_msg(fd, &prio) )
+  {
+    prog->prio = prio;
+    return invoke_send_msg(fd, INVOKER_MSG_ACK);
+  }
 
-  invoke_send_msg(fd, INVOKER_MSG_ACK);
-
-  return true;
+  return false;
 }
 
 static bool
@@ -359,7 +357,11 @@ invoked_get_env(int fd, prog_t *prog)
   uint32_t n_vars;
 
   /* Get number of environment variables. */
-  invoke_recv_msg(fd, &n_vars);
+  if ( !invoke_recv_msg(fd, &n_vars) )
+  {
+    error("receiving environ counter fd = %d: %s\n", fd, strerror(errno));
+    return false;
+  }
 
   /* Get environ. */
   for (i = 0; i < n_vars; i++)
@@ -369,7 +371,7 @@ invoked_get_env(int fd, prog_t *prog)
     var = invoke_recv_str(fd);
     if (var == NULL)
     {
-      error("receiving environ[%i]\n", i);
+      error("receiving environ[%i]: %s\n", i, strerror(errno));
       return false;
     }
 
@@ -387,10 +389,7 @@ invoked_get_env(int fd, prog_t *prog)
 static bool
 invoked_send_action(int fd, int action, int value)
 {
-  invoke_send_msg(fd, action);
-  invoke_send_msg(fd, value);
-
-  return true;
+  return invoke_send_msg(fd, action) && invoke_send_msg(fd, value);
 }
 
 static bool
@@ -407,7 +406,11 @@ invoked_get_actions(int fd, prog_t *prog)
     uint32_t action;
 
     /* Get the action. */
-    invoke_recv_msg(fd, &action);
+    if ( !invoke_recv_msg(fd, &action) )
+    {
+      error("receiving action failed in %s using fd %d: %s\n", __FUNCTION__, fd, strerror(errno));
+      return false;
+    }
 
     switch (action)
     {
@@ -650,6 +653,7 @@ store_state(kindergarten_t *childs, int invoker_fd)
   int fd;
   child_t *list = childs->list;
   comm_msg_t *msg;
+  bool result;
 
   unlink(statefilename);
 
@@ -677,12 +681,12 @@ store_state(kindergarten_t *childs, int invoker_fd)
     comm_msg_put_str(msg, list[i].name);
   }
 
-  comm_msg_send(fd, msg);
+  result = comm_msg_send(fd, msg);
 
   comm_msg_destroy(msg);
   close(fd);
 
-  return true;
+  return result;
 }
 
 static kindergarten_t *
@@ -695,6 +699,7 @@ load_state(int *invoker_fd)
   kindergarten_t *childs;
   child_t *list;
   comm_msg_t *msg;
+  bool result;
 
   fd = open(statefilename, O_RDONLY);
   if (fd < 0)
@@ -705,12 +710,12 @@ load_state(int *invoker_fd)
   }
 
   msg = comm_msg_new(512, 0);
-  comm_msg_recv(fd, msg);
+  result = comm_msg_recv(fd, msg);
 
   close(fd);
 
   comm_msg_get_magic(msg, &magic);
-  if (LAUNCHER_STATE_SIG != magic)
+  if (result && LAUNCHER_STATE_SIG != magic)
   {
     error("wrong signature on persistence file '%s'\n", statefilename);
     comm_msg_destroy(msg);
