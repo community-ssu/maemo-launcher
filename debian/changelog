@@ -1,3 +1,9 @@
+maemo-launcher (0.35-7) unstable; urgency=low
+
+  * Reliable IO patch from Leonid Moiseichuk. Fixes: NB#142460
+
+ -- Janne Karhunen <Janne.Karhunen@nokia.com>  Wed, 21 Oct 2009 09:34:26 +0300
+
 maemo-launcher (0.35-6) unstable; urgency=low
 
   * Revise hildon booster library listing, Fixes: NB#129909
