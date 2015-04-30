@@ -1,3 +1,9 @@
+maemo-launcher (0.35-8+0m5) unstable; urgency=low
+
+  * Suffix +0m5 added to package revision
+
+ -- Ivaylo Dimitrov <freemangordon@abv.bg>  Thu, 30 Apr 2015 20:26:44 +0300
+
 maemo-launcher (0.35-8) unstable; urgency=low
 
   * enable booster-qt
