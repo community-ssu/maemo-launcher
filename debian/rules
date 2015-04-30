@@ -20,6 +20,12 @@ else
 	opt_hildon := --enable-hildon-booster --enable-cpp-booster
 endif
 
+ifneq (,$(findstring noqt,$(DEB_BUILD_OPTIONS)))
+	opt_qt :=
+else
+	opt_qt := --enable-qt-booster
+endif
+
 # Nasty thing due to having the upstream and debian stuff merged.
 configure: configure.ac
 	autoreconf -f -i -Wall
@@ -31,6 +37,7 @@ config.status: configure
 	CFLAGS="$(CFLAGS)" ./configure \
 	  --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
 	  $(opt_hildon) \
+	  $(opt_qt) \
 	  --mandir=\$${prefix}/share/man \
 	  --prefix=/usr
 
