@@ -1,3 +1,9 @@
+maemo-launcher (0.35-8) unstable; urgency=low
+
+  * enable booster-qt
+
+ -- Ivaylo Dimitrov <freemangordon@abv.bg>  Thu, 30 Apr 2015 20:13:32 +0300
+
 maemo-launcher (0.35-7) unstable; urgency=low
 
   * Reliable IO patch from Leonid Moiseichuk. Fixes: NB#142460
